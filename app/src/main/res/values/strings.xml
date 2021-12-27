@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">ECommerce</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="home">Home</string>
+    <string name="shoppingCart">Shopping Cart</string>
+    <string name="product_categories">"Categories</string>
+    <string name="Account">Account</string>
+    <string name="whatYouLookingFor">What you Looking For ?</string>
+    <string name="featured_today">Featured Today</string>
+</resources>

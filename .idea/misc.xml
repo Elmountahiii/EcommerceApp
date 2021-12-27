@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/Yusuf/AndroidStudioProjects/Ecommerce/app/src/main/res/layout/activity_main.xml" value="0.13973941368078177" />
+        <entry key="..\:/Users/Yusuf/AndroidStudioProjects/amazonClone/app/src/main/res/drawable/custom_shearch_icon.xml" value="0.1925925925925926" />
+        <entry key="..\:/Users/Yusuf/AndroidStudioProjects/amazonClone/app/src/main/res/drawable/ic_search.xml" value="0.19722222222222222" />
+        <entry key="..\:/Users/Yusuf/AndroidStudioProjects/amazonClone/app/src/main/res/drawable/ic_search_full.xml" value="0.19722222222222222" />
+        <entry key="..\:/Users/Yusuf/AndroidStudioProjects/amazonClone/app/src/main/res/layout/activity_main.xml" value="0.22" />
+        <entry key="..\:/Users/Yusuf/AndroidStudioProjects/amazonClone/app/src/main/res/layout/fragment_home.xml" value="0.21944444444444444" />
+        <entry key="..\:/Users/Yusuf/AndroidStudioProjects/amazonClone/app/src/main/res/layout/fragment_product_categories.xml" value="0.21944444444444444" />
+        <entry key="..\:/Users/Yusuf/AndroidStudioProjects/amazonClone/app/src/main/res/layout/fragment_profile.xml" value="0.22291666666666668" />
+        <entry key="..\:/Users/Yusuf/AndroidStudioProjects/amazonClone/app/src/main/res/layout/fragment_shopping_cart.xml" value="0.22291666666666668" />
+        <entry key="..\:/Users/Yusuf/AndroidStudioProjects/amazonClone/app/src/main/res/layout/today_product_item_layout.xml" value="0.21944444444444444" />
+        <entry key="..\:/Users/Yusuf/AndroidStudioProjects/amazonClone/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.22291666666666668" />
+        <entry key="..\:/Users/Yusuf/AndroidStudioProjects/amazonClone/app/src/main/res/menu/buttom_navigation_menu.xml" value="0.22291666666666668" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>
