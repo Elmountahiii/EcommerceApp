@@ -9,7 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.my.ecommerce.R;
+import com.my.ecommerce.repository.FirebaseRepository;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class HomeFragment extends Fragment {
 
     public HomeFragment() {
@@ -23,6 +27,8 @@ public class HomeFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_home, container, false);
     }
 
-
-
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
 }
