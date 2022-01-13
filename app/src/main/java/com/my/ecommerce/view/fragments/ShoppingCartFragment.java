@@ -10,9 +10,7 @@ import android.view.ViewGroup;
 
 import com.my.ecommerce.R;
 
-import dagger.hilt.android.AndroidEntryPoint;
 
-@AndroidEntryPoint
 public class ShoppingCartFragment extends Fragment {
 
     public ShoppingCartFragment() {

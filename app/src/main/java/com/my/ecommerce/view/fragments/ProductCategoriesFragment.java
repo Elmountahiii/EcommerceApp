@@ -22,9 +22,7 @@ import com.my.ecommerce.viewmodel.AppViewModel;
 
 import java.util.List;
 
-import dagger.hilt.android.AndroidEntryPoint;
 
-@AndroidEntryPoint
 public class ProductCategoriesFragment extends Fragment {
 
     AppViewModel viewModel;

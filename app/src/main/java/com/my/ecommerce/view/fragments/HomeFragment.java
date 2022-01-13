@@ -11,9 +11,7 @@ import android.view.ViewGroup;
 import com.my.ecommerce.R;
 import com.my.ecommerce.repository.FirebaseRepository;
 
-import dagger.hilt.android.AndroidEntryPoint;
 
-@AndroidEntryPoint
 public class HomeFragment extends Fragment {
 
     public HomeFragment() {

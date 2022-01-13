@@ -15,8 +15,7 @@ import com.my.ecommerce.utils.SingleLiveEvent;
 
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+
 
 public class FirebaseRepository {
 
