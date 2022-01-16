@@ -28,7 +28,6 @@ public class ProductCategoriesFragment extends Fragment {
     AppViewModel viewModel;
 
     RecyclerView categoryRecyclerList;
-     ProgressBar progressBar;
 
     public ProductCategoriesFragment() {
         // Required empty public constructor
@@ -37,8 +36,7 @@ public class ProductCategoriesFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        categoryRecyclerList= view.findViewById(R.id.categoryList);
-        progressBar=view.findViewById(R.id.progressBar);
+        categoryRecyclerList = view.findViewById(R.id.categoryList);
     }
 
     @Override
@@ -53,7 +51,6 @@ public class ProductCategoriesFragment extends Fragment {
         super.onStart();
         initViewModel();
 
-        viewModel.getCategories();
     }
 
     @Override
@@ -63,7 +60,6 @@ public class ProductCategoriesFragment extends Fragment {
         viewModel.listOfCategories.observe(getViewLifecycleOwner(), new Observer<List<Category>>() {
             @Override
             public void onChanged(List<Category> categoryList) {
-                progressBar.setVisibility(View.INVISIBLE);
                 CategoryListAdapter adapter = new CategoryListAdapter(categoryList);
                 categoryRecyclerList.setAdapter(adapter);
 
@@ -73,8 +69,8 @@ public class ProductCategoriesFragment extends Fragment {
     }
 
     // start using that viewModel
-    void initViewModel(){
-        viewModel =new ViewModelProvider(requireActivity()).get(AppViewModel.class);
+    void initViewModel() {
+        viewModel = new ViewModelProvider(requireActivity()).get(AppViewModel.class);
 
     }
 

@@ -3,6 +3,9 @@ package com.my.ecommerce.repository;
 import android.util.Log;
 
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -33,10 +36,11 @@ public class FirebaseRepository {
 
 
     // The Category Data
-    public SingleLiveEvent<List<Category>> listOfCategories = new SingleLiveEvent<>();
+    public MutableLiveData<List<Category>> listOfCategories = new MutableLiveData<List<Category>>() {
+    };
 
     // The Products Data
-    public SingleLiveEvent<List<Product>> listOfProducts = new SingleLiveEvent<>();
+    public MutableLiveData<List<Product>> listOfProducts = new MutableLiveData<>();
 
 
 

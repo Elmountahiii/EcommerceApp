@@ -1,5 +1,6 @@
 package com.my.ecommerce.viewmodel;
 
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.my.ecommerce.models.Category;
@@ -13,14 +14,16 @@ import java.util.List;
 public class AppViewModel extends ViewModel {
 
     FirebaseRepository repository= new FirebaseRepository();
-    public SingleLiveEvent<List<Category>> listOfCategories;
-    public  SingleLiveEvent<List<Product>> listOfProducts;
+    public MutableLiveData<List<Category>> listOfCategories;
+    public  MutableLiveData<List<Product>> listOfProducts;
 
 
 
     public AppViewModel() {
         listOfCategories = repository.listOfCategories;
         listOfProducts= repository.listOfProducts;
+        repository.getCategoriesFromDataBase();
+        repository.getProductsFromDataBase();
 
     }
 
