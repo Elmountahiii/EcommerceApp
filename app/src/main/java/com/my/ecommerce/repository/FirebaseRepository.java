@@ -49,7 +49,7 @@ public class FirebaseRepository {
 
 
         categoriesCollectionsPath
-                .orderBy("CategoryId", Query.Direction.DESCENDING)
+                .orderBy("CategoryId", Query.Direction.ASCENDING)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {

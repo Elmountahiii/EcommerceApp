@@ -14,9 +14,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.my.ecommerce.R;
 import com.my.ecommerce.adapters.ProductsListAdapter;
+import com.my.ecommerce.interfaces.OnProductClickListener;
 import com.my.ecommerce.models.Product;
 import com.my.ecommerce.repository.FirebaseRepository;
 import com.my.ecommerce.viewmodel.AppViewModel;
@@ -24,7 +26,8 @@ import com.my.ecommerce.viewmodel.AppViewModel;
 import java.util.List;
 
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements OnProductClickListener {
+
     AppViewModel viewModel;
 
     RecyclerView productsRecyclerList;
@@ -63,8 +66,7 @@ public class HomeFragment extends Fragment {
         viewModel.listOfProducts.observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
             @Override
             public void onChanged(List<Product> products) {
-                Log.d("kharboucha", "onChanged: "+products.size());
-                ProductsListAdapter adapter= new ProductsListAdapter(products);
+                ProductsListAdapter adapter= new ProductsListAdapter(products,HomeFragment.this);
                 productsRecyclerList.setAdapter(adapter);
             }
         });
@@ -73,6 +75,13 @@ public class HomeFragment extends Fragment {
     // start using that viewModel
     void initViewModel(){
         viewModel =new ViewModelProvider(requireActivity()).get(AppViewModel.class);
+
+    }
+
+    @Override
+    public void productClick(int ProductId) {
+
+        Toast.makeText(this.getContext(),String.valueOf(ProductId),Toast.LENGTH_LONG).show();
 
     }
 }

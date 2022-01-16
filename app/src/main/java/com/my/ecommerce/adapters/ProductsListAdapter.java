@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.my.ecommerce.R;
+import com.my.ecommerce.interfaces.OnProductClickListener;
 import com.my.ecommerce.models.Product;
 
 import java.util.List;
@@ -20,10 +21,13 @@ import java.util.List;
 public class ProductsListAdapter extends RecyclerView.Adapter<ProductsListAdapter.ProductViewHolder> {
 
     List<Product> productList;
+    OnProductClickListener onProductClickListener;
 
 
-    public ProductsListAdapter(List<Product>products){
+
+    public ProductsListAdapter(List<Product>products,OnProductClickListener onProductClickListener){
         this.productList=products;
+        this.onProductClickListener=onProductClickListener;
     }
 
 
@@ -33,7 +37,7 @@ public class ProductsListAdapter extends RecyclerView.Adapter<ProductsListAdapte
 
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.single_product_item_layout, parent, false);
-        return new ProductViewHolder(view,parent.getContext());
+        return new ProductViewHolder(view,parent.getContext(),onProductClickListener);
     }
 
     @Override
@@ -55,9 +59,10 @@ public class ProductsListAdapter extends RecyclerView.Adapter<ProductsListAdapte
 
         private ImageView productImage;
         private Context context;
+        OnProductClickListener onProductClickListener;
 
 
-        public ProductViewHolder(@NonNull View itemView, Context context) {
+        public ProductViewHolder(@NonNull View itemView, Context context,OnProductClickListener onProductClickListener) {
             super(itemView);
 
             this.title=itemView.findViewById(R.id.productTitle);
@@ -65,6 +70,7 @@ public class ProductsListAdapter extends RecyclerView.Adapter<ProductsListAdapte
             this.category=itemView.findViewById(R.id.productCategory);
             this.productImage=itemView.findViewById(R.id.productImage);
             this.context=context;
+            this.onProductClickListener=onProductClickListener;
         }
 
 
@@ -76,6 +82,15 @@ public class ProductsListAdapter extends RecyclerView.Adapter<ProductsListAdapte
                     .into(productImage);
 
             category.setText(product.category);
+            title.setOnClickListener(View->{
+                onProductClickListener.productClick(productList.get(getAdapterPosition()).id);
+
+            });
+
+            productImage.setOnClickListener(view -> {
+
+              onProductClickListener.productClick(productList.get(getAdapterPosition()).id);
+            });
 
         }
     }
