@@ -3,12 +3,18 @@ package com.my.ecommerce.repository;
 import android.util.Log;
 
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.my.ecommerce.models.Category;
 import com.my.ecommerce.models.Product;
 import com.my.ecommerce.utils.SingleLiveEvent;
@@ -32,6 +38,8 @@ public class FirebaseRepository {
 
     // Products data location
     private final CollectionReference productsCollectionsPath = database.collection("products");
+
+    public MutableLiveData<Product> selectedProduct=new MutableLiveData<Product>();
 
 
 
@@ -80,6 +88,30 @@ public class FirebaseRepository {
 
                 })
                 .addOnFailureListener(error -> Log.d("DatabaseMASTER", "Products call onFailure: " + error.getMessage()));
+
+
+    }
+
+
+
+    public void getProductById(int id){
+        selectedProduct.setValue(new Product());
+        productsCollectionsPath
+                .whereEqualTo("id",id)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                       selectedProduct.setValue(queryDocumentSnapshots.toObjects(Product.class).get(0));
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
 
 
     }

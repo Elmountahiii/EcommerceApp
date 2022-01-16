@@ -9,7 +9,11 @@
         android:id="@+id/destination_home"
         android:name="com.my.ecommerce.view.fragments.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_destination_home_to_productDetailsFragment"
+            app:destination="@id/productDetailsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/destination_product_categories"
         android:name="com.my.ecommerce.view.fragments.ProductCategoriesFragment"
@@ -25,5 +29,10 @@
         android:name="com.my.ecommerce.view.fragments.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/productDetailsFragment"
+        android:name="com.my.ecommerce.view.fragments.ProductDetailsFragment"
+        android:label="fragment_product_details"
+        tools:layout="@layout/fragment_product_details" />
 
 </navigation>

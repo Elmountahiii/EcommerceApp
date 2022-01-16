@@ -16,6 +16,7 @@ public class AppViewModel extends ViewModel {
     FirebaseRepository repository= new FirebaseRepository();
     public MutableLiveData<List<Category>> listOfCategories;
     public  MutableLiveData<List<Product>> listOfProducts;
+    public MutableLiveData<Product> product;
 
 
 
@@ -24,6 +25,7 @@ public class AppViewModel extends ViewModel {
         listOfProducts= repository.listOfProducts;
         repository.getCategoriesFromDataBase();
         repository.getProductsFromDataBase();
+        product=repository.selectedProduct;
 
     }
 
@@ -35,6 +37,11 @@ public class AppViewModel extends ViewModel {
     public void  getProducts(){
 
         repository.getProductsFromDataBase();
+    }
+
+    public void getProductById(int id){
+        repository.getProductById(id);
+
     }
 
 

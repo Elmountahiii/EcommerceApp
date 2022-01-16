@@ -7,6 +7,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
@@ -39,8 +41,7 @@ public class HomeFragment extends Fragment implements OnProductClickListener {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState)
-    {
+                             Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_home, container, false);
     }
 
@@ -49,7 +50,7 @@ public class HomeFragment extends Fragment implements OnProductClickListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        productsRecyclerList=view.findViewById(R.id.recentlyProductsList);
+        productsRecyclerList = view.findViewById(R.id.recentlyProductsList);
     }
 
     @Override
@@ -66,22 +67,21 @@ public class HomeFragment extends Fragment implements OnProductClickListener {
         viewModel.listOfProducts.observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
             @Override
             public void onChanged(List<Product> products) {
-                ProductsListAdapter adapter= new ProductsListAdapter(products,HomeFragment.this);
+                ProductsListAdapter adapter = new ProductsListAdapter(products, HomeFragment.this);
                 productsRecyclerList.setAdapter(adapter);
             }
         });
     }
 
     // start using that viewModel
-    void initViewModel(){
-        viewModel =new ViewModelProvider(requireActivity()).get(AppViewModel.class);
+    void initViewModel() {
+        viewModel = new ViewModelProvider(requireActivity()).get(AppViewModel.class);
 
     }
 
     @Override
     public void productClick(int ProductId) {
-
-        Toast.makeText(this.getContext(),String.valueOf(ProductId),Toast.LENGTH_LONG).show();
-
+        viewModel.getProductById(ProductId);
+        NavHostFragment.findNavController(this).navigate(R.id.action_destination_home_to_productDetailsFragment);
     }
 }
