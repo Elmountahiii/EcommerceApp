@@ -1,5 +1,6 @@
 package com.my.ecommerce.view.fragments;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -18,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.MaterialToolbar;
@@ -68,6 +70,8 @@ public class ProductDetailsFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
+
+
         viewModel.product.observe(getViewLifecycleOwner(), new Observer<Product>() {
             @Override
             public void onChanged(Product product) {
@@ -82,6 +86,20 @@ public class ProductDetailsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 NavHostFragment.findNavController(ProductDetailsFragment.this).popBackStack();
+            }
+        });
+
+        addToCartButton.setOnClickListener(View ->{
+            viewModel.savedProductToCart(viewModel.product.getValue().id);
+            View.setBackgroundColor(Color.parseColor("#91C483"));
+            addToCartButton.setText("successfully added to cart");
+        });
+
+        viewModel.addingProductToCartState.observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                Toast.makeText(requireContext(),s,Toast.LENGTH_LONG).show();
+
             }
         });
 

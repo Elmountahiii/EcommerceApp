@@ -8,6 +8,7 @@ import com.my.ecommerce.models.Product;
 import com.my.ecommerce.repository.FirebaseRepository;
 import com.my.ecommerce.utils.SingleLiveEvent;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -16,14 +17,17 @@ public class AppViewModel extends ViewModel {
     FirebaseRepository repository= new FirebaseRepository();
     public MutableLiveData<List<Category>> listOfCategories;
     public  MutableLiveData<List<Product>> listOfProducts;
-    public MutableLiveData<List<Product>>listOfCartProduct;
+    public MutableLiveData<ArrayList<Product>>listOfCartProduct;
     public MutableLiveData<Product> product;
 
     public MutableLiveData<Float> totalCartPrice;
+    public SingleLiveEvent<String> addingProductToCartState;
 
 
 
     public AppViewModel() {
+        repository.checkUserAuthentication();
+        repository.getSavedCardIds();
         listOfCategories = repository.listOfCategories;
         listOfProducts= repository.listOfProducts;
         repository.getCategoriesFromDataBase();
@@ -31,6 +35,7 @@ public class AppViewModel extends ViewModel {
         product=repository.selectedProduct;
         listOfCartProduct= repository.listOfCartProduct;
         totalCartPrice= repository.totalCartPrice;
+        addingProductToCartState=repository.addingProductToCartState;
 
     }
 
@@ -68,4 +73,13 @@ public class AppViewModel extends ViewModel {
 
         repository.minusFromPrice(priceToBeMinus);
     }
+
+    public void savedProductToCart(int productId){
+        repository.checkIfProductAlreadySaved(productId);
+    }
+
+    public void countCartTotalPrice(List<Product> products){
+        repository.countTotalPrice(products);
+    }
+
 }

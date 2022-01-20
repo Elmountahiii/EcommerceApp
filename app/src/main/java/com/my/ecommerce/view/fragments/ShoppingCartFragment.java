@@ -9,10 +9,12 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.my.ecommerce.R;
 import com.my.ecommerce.adapters.CartListAdapter;
@@ -72,7 +74,8 @@ public class ShoppingCartFragment extends Fragment implements OnCartProductRemov
         viewModel.listOfCartProduct.observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
             @Override
             public void onChanged(List<Product> products) {
-
+                Log.d("pour", "onChanged: "+products.size());
+                viewModel.countCartTotalPrice(products);
 
                 CartListAdapter adapter=new CartListAdapter(products,ShoppingCartFragment.this);
                 cartRecyclerView.setAdapter(adapter);
@@ -83,11 +86,13 @@ public class ShoppingCartFragment extends Fragment implements OnCartProductRemov
             @Override
             public void onChanged(Float aFloat) {
 
-                totalPrice.setText(String.valueOf(new DecimalFormat("##.##").format(aFloat)));
+                totalPrice.setText(String.valueOf(new DecimalFormat("##.##").format(aFloat))+"€");
 
 
             }
         });
+
+
 
     }
 
