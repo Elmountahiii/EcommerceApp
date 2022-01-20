@@ -19,6 +19,7 @@ import com.my.ecommerce.models.Category;
 import com.my.ecommerce.models.Product;
 import com.my.ecommerce.utils.SingleLiveEvent;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 
@@ -42,6 +43,9 @@ public class FirebaseRepository {
     public MutableLiveData<Product> selectedProduct=new MutableLiveData<Product>();
 
 
+    public MutableLiveData<Float> totalCartPrice=new MutableLiveData<>(0.0f);
+
+
 
     // The Category Data
     public MutableLiveData<List<Category>> listOfCategories = new MutableLiveData<List<Category>>() {
@@ -49,6 +53,8 @@ public class FirebaseRepository {
 
     // The Products Data
     public MutableLiveData<List<Product>> listOfProducts = new MutableLiveData<>();
+
+    public MutableLiveData<List<Product>> listOfCartProduct= new MutableLiveData<>();
 
 
 
@@ -82,6 +88,9 @@ public class FirebaseRepository {
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
                         listOfProducts.setValue(queryDocumentSnapshots.toObjects(Product.class));
+                        listOfCartProduct.setValue(queryDocumentSnapshots.toObjects(Product.class));
+
+                        getCartTotalPrice(listOfProducts.getValue());
 
                     }
 
@@ -92,6 +101,18 @@ public class FirebaseRepository {
 
     }
 
+    private void getCartTotalPrice(List<Product> products) {
+        totalCartPrice.setValue(0.0f);
+
+        for (int i = 0; i < products.size(); i++) {
+
+
+            totalCartPrice.setValue(totalCartPrice.getValue()+products.get(i).price);
+
+
+
+        }
+    }
 
 
     public void getProductById(int id){
@@ -117,4 +138,26 @@ public class FirebaseRepository {
     }
 
 
+    public void removeProductFromCart(int position) {
+
+        listOfCartProduct.getValue().remove(position);
+        getCartTotalPrice(listOfCartProduct.getValue());
+        listOfCartProduct.postValue(listOfCartProduct.getValue());
+
+
+    }
+
+
+
+    public void addToPrice(float priceToBeAdd) {
+
+        totalCartPrice.setValue(totalCartPrice.getValue()+priceToBeAdd);
+
+
+    }
+
+    public void minusFromPrice(float priceToBeMinus) {
+        totalCartPrice.setValue(totalCartPrice.getValue()-priceToBeMinus);
+
+    }
 }

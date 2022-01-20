@@ -16,7 +16,10 @@ public class AppViewModel extends ViewModel {
     FirebaseRepository repository= new FirebaseRepository();
     public MutableLiveData<List<Category>> listOfCategories;
     public  MutableLiveData<List<Product>> listOfProducts;
+    public MutableLiveData<List<Product>>listOfCartProduct;
     public MutableLiveData<Product> product;
+
+    public MutableLiveData<Float> totalCartPrice;
 
 
 
@@ -26,6 +29,8 @@ public class AppViewModel extends ViewModel {
         repository.getCategoriesFromDataBase();
         repository.getProductsFromDataBase();
         product=repository.selectedProduct;
+        listOfCartProduct= repository.listOfCartProduct;
+        totalCartPrice= repository.totalCartPrice;
 
     }
 
@@ -44,5 +49,23 @@ public class AppViewModel extends ViewModel {
 
     }
 
+    public void removeProductFromCart(int position){
 
+        repository.removeProductFromCart(position);
+
+
+    }
+
+
+    public void addToPrice(float priceToBeAdd) {
+
+        repository.addToPrice(priceToBeAdd);
+
+
+    }
+
+    public void minusFromPrice(float priceToBeMinus) {
+
+        repository.minusFromPrice(priceToBeMinus);
+    }
 }
