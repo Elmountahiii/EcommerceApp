@@ -36,6 +36,7 @@ public class FirebaseRepository {
     // Firebase Authentication Instance
     private final FirebaseAuth auth = FirebaseAuth.getInstance();
 
+
     // Firebase DataBase Instance
     private final FirebaseFirestore database = FirebaseFirestore.getInstance();
 
@@ -183,7 +184,7 @@ public class FirebaseRepository {
 
 
     public void getSavedCardIds() {
-        Log.d("CartShit", "Start Getting list Of Id ");
+
         cartCollectionsPath.document(auth.getCurrentUser().getUid())
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -191,11 +192,9 @@ public class FirebaseRepository {
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if (documentSnapshot.exists()) {
                             listOfCartIds = documentSnapshot.toObject(Cart.class);
-                            Log.d("CartShit", "Success size of ids is :"+listOfCartIds.productId.size());
                             getCardProducts();
 
                         } else {
-                            Log.d("CartShit", "the User never Saved Any Product");
                             listOfCartIds = new Cart(new ArrayList<>());
 
                         }
@@ -211,11 +210,9 @@ public class FirebaseRepository {
     }
 
     public void getCardProducts() {
-        Log.d("CartShit", "Start getting Product By his Id from database ");
 
         ArrayList<Product> productList = new ArrayList<>();
 
-        Log.d("CartShit", "the list of ids is now : "+listOfCartIds.productId.size());
         if (listOfCartIds.productId.size()==0){
             listOfCartProduct.setValue(productList);
         }
@@ -230,14 +227,11 @@ public class FirebaseRepository {
                         public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
                             if (queryDocumentSnapshots.isEmpty()){
-                                Log.d("CartShit", "empty");
                             }else {
-                                Log.d("CartShit", "not empty");
                             }
 
                             try {
                                 productList.add(queryDocumentSnapshots.toObjects(Product.class).get(0));
-                                Log.d("CartShit", queryDocumentSnapshots.toObjects(Product.class).get(0).title);
                                 listOfCartProduct.setValue(productList);
 
                             } catch (Exception e) {
@@ -256,7 +250,6 @@ public class FirebaseRepository {
 
         }
 
-//        Log.d("CartShit", "end getting product the size of products : "+listOfCartProduct.getValue().size());
 
 
     }
@@ -265,7 +258,6 @@ public class FirebaseRepository {
 
     private void saveProductsIdsToDatabase(List<Integer> productIds) {
 
-        Log.d("CartShit", "start Saving the new Product Ids to Database");
         Map<String, Object> cartData = new HashMap<>();
         cartData.put("productId", productIds);
 
@@ -274,7 +266,6 @@ public class FirebaseRepository {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
-                        Log.d("CartShit", "Success saving now get fresh cart product");
 
                         getCardProducts();
 
@@ -292,17 +283,10 @@ public class FirebaseRepository {
     }
 
     public void removeProductFromCart(int position) {
-        Log.d("CartShit", "Start the process of Deleting a product from database");
 
         Product product = listOfCartProduct.getValue().get(position);
-        Log.d("CartShit", "this product: "+ product.title);
-        Log.d("CartShit", "id is :"+product.id);
         listOfCartIds.productId.remove(Integer.valueOf(product.id));
-        if (listOfCartIds.productId.contains(Integer.valueOf(product.id))){
-            Log.d("CartShit", "yes the Id is still there ");
-        }else {
-            Log.d("CartShit", "the id is gone the size of the list is : "+listOfCartIds.productId.size());
-        }
+
 
 
         saveProductsIdsToDatabase(listOfCartIds.productId);
@@ -325,6 +309,8 @@ public class FirebaseRepository {
             @Override
             public void onSuccess(AuthResult authResult) {
                 Log.d("AuthStuuf", "onSuccess: " + authResult.getUser().getUid());
+                getSavedCardIds();
+
             }
         });
     }

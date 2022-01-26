@@ -27,7 +27,6 @@ public class AppViewModel extends ViewModel {
 
     public AppViewModel() {
         repository.checkUserAuthentication();
-        repository.getSavedCardIds();
         listOfCategories = repository.listOfCategories;
         listOfProducts= repository.listOfProducts;
         repository.getCategoriesFromDataBase();
@@ -36,6 +35,8 @@ public class AppViewModel extends ViewModel {
         listOfCartProduct= repository.listOfCartProduct;
         totalCartPrice= repository.totalCartPrice;
         addingProductToCartState=repository.addingProductToCartState;
+
+
 
     }
 
