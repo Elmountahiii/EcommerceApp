@@ -83,4 +83,5 @@ public class AppViewModel extends ViewModel {
         repository.countTotalPrice(products);
     }
 
+
 }

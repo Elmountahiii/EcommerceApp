@@ -185,28 +185,32 @@ public class FirebaseRepository {
 
     public void getSavedCardIds() {
 
-        cartCollectionsPath.document(auth.getCurrentUser().getUid())
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if (documentSnapshot.exists()) {
-                            listOfCartIds = documentSnapshot.toObject(Cart.class);
-                            getCardProducts();
+        if (auth.getCurrentUser().getUid()!=null){
 
-                        } else {
-                            listOfCartIds = new Cart(new ArrayList<>());
+            cartCollectionsPath.document(auth.getCurrentUser().getUid())
+                    .get()
+                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            if (documentSnapshot.exists()) {
+                                listOfCartIds = documentSnapshot.toObject(Cart.class);
+                                getCardProducts();
+
+                            } else {
+                                listOfCartIds = new Cart(new ArrayList<>());
+
+                            }
 
                         }
+                    }).
+                    addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
 
-                    }
-                }).
-                addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
+                        }
+                    });
+        }
 
-                    }
-                });
     }
 
     public void getCardProducts() {
@@ -227,6 +231,7 @@ public class FirebaseRepository {
                         public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
                             if (queryDocumentSnapshots.isEmpty()){
+
                             }else {
                             }
 
@@ -300,6 +305,8 @@ public class FirebaseRepository {
     public void checkUserAuthentication() {
         if (auth.getCurrentUser() == null) {
             signUserAnonymously();
+        }else {
+            getSavedCardIds();
         }
     }
 
