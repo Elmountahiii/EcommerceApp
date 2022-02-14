@@ -7,12 +7,15 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +36,8 @@ public class ShoppingCartFragment extends Fragment implements OnCartProductRemov
     RecyclerView cartRecyclerView;
 
     TextView totalPrice;
+
+    Button checkoutButton;
 
 
     public ShoppingCartFragment() {
@@ -64,6 +69,9 @@ public class ShoppingCartFragment extends Fragment implements OnCartProductRemov
         cartRecyclerView = view.findViewById(R.id.ShoppingCartProductsList);
         totalPrice = view.findViewById(R.id.ShoppingCartTotalPrice);
 
+        checkoutButton= view.findViewById(R.id.Checkout);
+
+
 
     }
 
@@ -82,6 +90,7 @@ public class ShoppingCartFragment extends Fragment implements OnCartProductRemov
 
               }
         });
+
         viewModel.totalCartPrice.observe(getViewLifecycleOwner(), new Observer<Float>() {
             @Override
             public void onChanged(Float aFloat) {
@@ -91,6 +100,16 @@ public class ShoppingCartFragment extends Fragment implements OnCartProductRemov
 
             }
         });
+
+        checkoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!viewModel.listOfCartProduct.getValue().isEmpty()){
+                    NavHostFragment.findNavController(ShoppingCartFragment.this).navigate(R.id.action_destination_shopping_cart_to_paymentTypeFragment);
+                }
+            }
+        });
+
 
 
 

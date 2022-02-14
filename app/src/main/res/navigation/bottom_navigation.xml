@@ -23,7 +23,12 @@
         android:id="@+id/destination_shopping_cart"
         android:name="com.my.ecommerce.view.fragments.ShoppingCartFragment"
         android:label="fragment_shopping_cart"
-        tools:layout="@layout/fragment_shopping_cart" />
+        tools:layout="@layout/fragment_shopping_cart" >
+        <action
+            android:id="@+id/action_destination_shopping_cart_to_paymentTypeFragment"
+            app:destination="@id/paymentTypeFragment"
+            />
+    </fragment>
     <fragment
         android:id="@+id/destination_account"
         android:name="com.my.ecommerce.view.fragments.ProfileFragment"
@@ -34,5 +39,34 @@
         android:name="com.my.ecommerce.view.fragments.ProductDetailsFragment"
         android:label="fragment_product_details"
         tools:layout="@layout/fragment_product_details" />
+    <fragment
+        android:id="@+id/paymentTypeFragment"
+        android:name="com.my.ecommerce.view.fragments.PaymentTypeFragment"
+        android:label="fragment_payment_type"
+        tools:layout="@layout/fragment_payment_type" >
+        <action
+            android:id="@+id/action_paymentTypeFragment_to_deliveryInformationFragment"
+            app:destination="@id/deliveryInformationFragment"
+
+            app:popUpTo="@id/paymentTypeFragment"
+            app:popUpToInclusive="true"/>
+    </fragment>
+    <fragment
+        android:id="@+id/deliveryInformationFragment"
+        android:name="com.my.ecommerce.view.fragments.DeliveryInformationFragment"
+        android:label="fragment_delivery_information"
+        tools:layout="@layout/fragment_delivery_information" >
+        <action
+            android:id="@+id/action_deliveryInformationFragment_to_productsSummeryFragment"
+            app:destination="@id/productsSummeryFragment"
+            app:popUpTo="@id/deliveryInformationFragment"
+            app:popUpToInclusive="true"
+            />
+    </fragment>
+    <fragment
+        android:id="@+id/productsSummeryFragment"
+        android:name="com.my.ecommerce.view.fragments.ProductsSummeryFragment"
+        android:label="fragment_products_summery"
+        tools:layout="@layout/fragment_products_summery" />
 
 </navigation>

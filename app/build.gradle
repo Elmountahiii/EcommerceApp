@@ -7,6 +7,19 @@ plugins {
 android {
     compileSdk 31
 
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/*'
+        exclude("META-INF/*.kotlin_module")
+    }
+
     defaultConfig {
         applicationId "com.my.ecommerce"
         minSdk 23
@@ -48,6 +61,10 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:28.3.0')
     implementation 'com.google.firebase:firebase-firestore'
     implementation 'com.google.firebase:firebase-auth'
+
+
+
+
 
 
     //Add Lifecycle components

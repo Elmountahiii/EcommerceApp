@@ -76,7 +76,7 @@
                 app:layout_constraintTop_toTopOf="@+id/textView7" />
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/Checkout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"

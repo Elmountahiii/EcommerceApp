@@ -84,4 +84,13 @@ public class AppViewModel extends ViewModel {
     }
 
 
+    public void sendConfirmationEmail(String emailAddress){
+        repository.sendOrderConfirmation(emailAddress);
+    }
+
+
+    public void removeCardItems(){
+        repository.removeALlCardProducts();
+    }
+
 }

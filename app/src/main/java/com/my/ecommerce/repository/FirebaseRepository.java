@@ -20,6 +20,8 @@ import com.my.ecommerce.models.Category;
 import com.my.ecommerce.models.Product;
 import com.my.ecommerce.utils.SingleLiveEvent;
 
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -259,7 +261,28 @@ public class FirebaseRepository {
 
     }
 
+public  void removeALlCardProducts(){
+    Map<String, Object> cartData = new HashMap<>();
+    cartData.put("productId", new ArrayList<Integer>());
+    cartCollectionsPath.document(auth.getCurrentUser().getUid())
+            .set(cartData)
+            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void unused) {
+                    getSavedCardIds();
 
+
+
+                }
+            })
+            .addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+
+                }
+            });
+
+}
 
     private void saveProductsIdsToDatabase(List<Integer> productIds) {
 
@@ -320,6 +343,17 @@ public class FirebaseRepository {
 
             }
         });
+    }
+
+
+
+    public void sendOrderConfirmation(String emailAddress){
+
+
+
+
+
+
     }
 
 }
