@@ -33,7 +33,16 @@
         android:id="@+id/destination_account"
         android:name="com.my.ecommerce.view.fragments.ProfileFragment"
         android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+
+
+        <action
+            android:id="@+id/action_destination_account_to_signUpFragment"
+            app:destination="@id/signUpFragment"
+            app:popUpTo="@id/destination_home"
+            app:popUpToInclusive="false"
+            />
+    </fragment>
     <fragment
         android:id="@+id/productDetailsFragment"
         android:name="com.my.ecommerce.view.fragments.ProductDetailsFragment"
@@ -68,5 +77,19 @@
         android:name="com.my.ecommerce.view.fragments.ProductsSummeryFragment"
         android:label="fragment_products_summery"
         tools:layout="@layout/fragment_products_summery" />
+    <fragment
+        android:id="@+id/signInFragment"
+        android:name="com.my.ecommerce.view.fragments.SignInFragment"
+        android:label="SignInFragment" >
+
+    </fragment>
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="com.my.ecommerce.view.fragments.SignUpFragment"
+        android:label="SignUpFragment" >
+        <action
+            android:id="@+id/action_signUpFragment_to_signInFragment"
+            app:destination="@id/signInFragment" />
+    </fragment>
 
 </navigation>

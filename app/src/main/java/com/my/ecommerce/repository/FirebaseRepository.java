@@ -18,6 +18,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.my.ecommerce.models.Cart;
 import com.my.ecommerce.models.Category;
 import com.my.ecommerce.models.Product;
+import com.my.ecommerce.models.UserType;
 import com.my.ecommerce.utils.SingleLiveEvent;
 
 
@@ -37,6 +38,8 @@ public class FirebaseRepository {
 
     // Firebase Authentication Instance
     private final FirebaseAuth auth = FirebaseAuth.getInstance();
+
+    public UserType userIs= UserType.Anonymous;
 
 
     // Firebase DataBase Instance
@@ -338,14 +341,11 @@ public  void removeALlCardProducts(){
         auth.signInAnonymously().addOnSuccessListener(new OnSuccessListener<AuthResult>() {
             @Override
             public void onSuccess(AuthResult authResult) {
-                Log.d("AuthStuuf", "onSuccess: " + authResult.getUser().getUid());
                 getSavedCardIds();
 
             }
         });
     }
-
-
 
     public void sendOrderConfirmation(String emailAddress){
 

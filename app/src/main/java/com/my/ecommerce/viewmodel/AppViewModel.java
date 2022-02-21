@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.my.ecommerce.models.Category;
 import com.my.ecommerce.models.Product;
+import com.my.ecommerce.models.UserType;
 import com.my.ecommerce.repository.FirebaseRepository;
 import com.my.ecommerce.utils.SingleLiveEvent;
 
@@ -91,6 +92,10 @@ public class AppViewModel extends ViewModel {
 
     public void removeCardItems(){
         repository.removeALlCardProducts();
+    }
+
+    public UserType getUsertype(){
+        return repository.userIs;
     }
 
 }
