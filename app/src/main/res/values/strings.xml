@@ -8,4 +8,10 @@
     <string name="Account">Account</string>
     <string name="whatYouLookingFor">What you Looking For ?</string>
     <string name="Recently_add">Recently add :</string>
+
+    <string-array name="UserType">
+        <item>Buyer</item>
+        <item>Seller</item>
+
+    </string-array>
 </resources>

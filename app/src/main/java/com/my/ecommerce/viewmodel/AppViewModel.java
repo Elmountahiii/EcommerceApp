@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.my.ecommerce.models.Category;
 import com.my.ecommerce.models.Product;
+import com.my.ecommerce.models.UserInfo;
 import com.my.ecommerce.models.UserType;
 import com.my.ecommerce.repository.FirebaseRepository;
 import com.my.ecommerce.utils.SingleLiveEvent;
@@ -21,8 +22,20 @@ public class AppViewModel extends ViewModel {
     public MutableLiveData<ArrayList<Product>>listOfCartProduct;
     public MutableLiveData<Product> product;
 
+
+    public SingleLiveEvent<Boolean> singUpSuccess;
+    public SingleLiveEvent<Boolean> singInSuccess;
+
+    public SingleLiveEvent<Boolean> saveUserDataSuccess;
+
     public MutableLiveData<Float> totalCartPrice;
     public SingleLiveEvent<String> addingProductToCartState;
+    public MutableLiveData<UserInfo> userInformation;
+
+
+    public SingleLiveEvent<String> singUpError;
+    public SingleLiveEvent<String> singInError;
+
 
 
 
@@ -36,6 +49,12 @@ public class AppViewModel extends ViewModel {
         listOfCartProduct= repository.listOfCartProduct;
         totalCartPrice= repository.totalCartPrice;
         addingProductToCartState=repository.addingProductToCartState;
+        singInSuccess= repository.singInSuccess;
+        singUpSuccess= repository.singUpSuccess;
+        saveUserDataSuccess=repository.saveUserDataSuccess;
+        userInformation=repository.userInformation;
+        singInError=repository.singInError;
+        singUpError=repository.singUpError;
 
 
 
@@ -71,6 +90,7 @@ public class AppViewModel extends ViewModel {
 
     }
 
+
     public void minusFromPrice(float priceToBeMinus) {
 
         repository.minusFromPrice(priceToBeMinus);
@@ -97,5 +117,21 @@ public class AppViewModel extends ViewModel {
     public UserType getUsertype(){
         return repository.userIs;
     }
+
+
+    public void singUp(String email,String password){
+        repository.singUp(email, password);
+
+    }
+    public void singIn(String email,String password){
+        repository.singIn(email, password);
+
+    }
+
+    public void saveUserInformation(UserInfo user){
+      repository.SaveUserInfo(user);
+    }
+
+
 
 }

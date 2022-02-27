@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView android:id="@+id/textView986"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textSize="20sp"
+    android:textColor="@color/black"
+    tools:text="Seller"
+    android:textStyle="bold"
+    android:gravity="center"
+    android:padding="10dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" />

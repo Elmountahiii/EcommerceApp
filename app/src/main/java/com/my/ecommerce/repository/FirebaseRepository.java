@@ -6,11 +6,17 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -18,6 +24,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.my.ecommerce.models.Cart;
 import com.my.ecommerce.models.Category;
 import com.my.ecommerce.models.Product;
+import com.my.ecommerce.models.UserInfo;
 import com.my.ecommerce.models.UserType;
 import com.my.ecommerce.utils.SingleLiveEvent;
 
@@ -54,12 +61,29 @@ public class FirebaseRepository {
     // cart data location
     private final CollectionReference cartCollectionsPath = database.collection("cart");
 
+    private final CollectionReference userInformationCollectionsPath = database.collection("userInfo");
+
+
+
+    public MutableLiveData<UserInfo> userInformation= new MutableLiveData<>();
 
     public MutableLiveData<Product> selectedProduct = new MutableLiveData<Product>();
 
     public MutableLiveData<Float> totalCartPrice = new MutableLiveData<>(0.0f);
 
     private Cart listOfCartIds = new Cart(new ArrayList<>());
+
+    public SingleLiveEvent<Boolean> singUpSuccess= new SingleLiveEvent<>();
+    public SingleLiveEvent<Boolean> singInSuccess= new SingleLiveEvent<>();
+    public SingleLiveEvent<Boolean> saveUserDataSuccess= new SingleLiveEvent<>();
+
+    public SingleLiveEvent<String> singUpError=new SingleLiveEvent<>();
+    public SingleLiveEvent<String> singInError=new SingleLiveEvent<>();
+
+
+
+
+
 
 
     // The Category Data
@@ -264,7 +288,7 @@ public class FirebaseRepository {
 
     }
 
-public  void removeALlCardProducts(){
+    public  void removeALlCardProducts(){
     Map<String, Object> cartData = new HashMap<>();
     cartData.put("productId", new ArrayList<Integer>());
     cartCollectionsPath.document(auth.getCurrentUser().getUid())
@@ -332,8 +356,35 @@ public  void removeALlCardProducts(){
         if (auth.getCurrentUser() == null) {
             signUserAnonymously();
         }else {
-            getSavedCardIds();
+            checkUserType();
         }
+    }
+
+    private void checkUserType() {
+
+
+        userInformationCollectionsPath.document(auth.getCurrentUser().getUid())
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        Log.d("khobi", "onSuccess: "+documentSnapshot.getData());
+                        UserInfo info = documentSnapshot.toObject(UserInfo.class);
+                        if (info!=null){
+                            userIs= info.userType;
+
+                            userInformation.setValue(info);
+
+                        }
+                        getSavedCardIds();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
     }
 
     private void signUserAnonymously() {
@@ -347,12 +398,78 @@ public  void removeALlCardProducts(){
         });
     }
 
+    public void singUp(String email,String password){
+        AuthCredential credential = EmailAuthProvider.getCredential(email, password);
+        auth.getCurrentUser().linkWithCredential(credential)
+               .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                   @Override
+                   public void onSuccess(AuthResult authResult) {
+                       singUpSuccess.setValue(true);
+                   }
+               }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                singUpSuccess.setValue(false);
+                singUpError.setValue(e.getMessage());
+
+            }
+        });
+
+    }
+
+    public void singIn(String email,String password){
+        auth.signInWithEmailAndPassword(email, password)
+                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                    @Override
+                    public void onSuccess(AuthResult authResult) {
+
+                        singInSuccess.setValue(true);
+                        checkUserType();
+
+
+
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        singInSuccess.setValue(false);
+                        singInError.setValue(e.getMessage());
+
+                    }
+                });
+    }
+
+
     public void sendOrderConfirmation(String emailAddress){
 
 
 
 
 
+
+    }
+
+
+    public void SaveUserInfo(UserInfo userInfo){
+        userInformationCollectionsPath.document(auth.getCurrentUser().getUid()).set(userInfo)
+             .addOnSuccessListener(new OnSuccessListener<Void>() {
+                 @Override
+                 public void onSuccess(Void unused) {
+                     saveUserDataSuccess.setValue(true);
+                     userIs=  userInfo.userType;
+                     checkUserType();
+                     Log.d("lilhada", "onSuccess: done ashbi");
+                 }
+             })
+                .addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("lilhada", "Failure: no ashbi");
+
+            }
+        });
 
     }
 

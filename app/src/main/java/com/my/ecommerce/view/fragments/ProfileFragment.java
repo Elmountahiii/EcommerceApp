@@ -36,10 +36,13 @@ public class ProfileFragment extends Fragment {
             NavHostFragment.findNavController(this).navigate(R.id.action_destination_account_to_signUpFragment);
 
         }else if (viewModel.getUsertype()== UserType.Buyer){
-            Toast.makeText(getContext(), "Buyer", Toast.LENGTH_SHORT).show();
+
+            NavHostFragment.findNavController(this).navigate(R.id.action_destination_account_to_accountFragment);
+
 
         }else if (viewModel.getUsertype()== UserType.Seller){
-            Toast.makeText(getContext(), "Seller", Toast.LENGTH_SHORT).show();
+            NavHostFragment.findNavController(this).navigate(R.id.action_destination_account_to_accountFragment);
+
 
         }
 
