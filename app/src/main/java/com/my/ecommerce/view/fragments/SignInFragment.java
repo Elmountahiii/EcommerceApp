@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.my.ecommerce.R;
+import com.my.ecommerce.models.UserType;
 import com.my.ecommerce.viewmodel.AppViewModel;
 
 
@@ -86,7 +87,13 @@ public class SignInFragment extends Fragment {
         viewModel.singInSuccess.observe(getViewLifecycleOwner(),aBoolean -> {
             if (aBoolean){
                 progressBar.setVisibility(View.INVISIBLE);
-                NavHostFragment.findNavController(SignInFragment.this).navigate(R.id.action_signInFragment_to_accountFragment);
+                if (viewModel.userInformation.getValue().userType== UserType.Buyer){
+                    NavHostFragment.findNavController(SignInFragment.this).navigate(R.id.action_signInFragment_to_buyerFragment);
+
+                }else {
+                    NavHostFragment.findNavController(SignInFragment.this).navigate(R.id.action_signInFragment_to_sellerFragment);
+
+                }
             }else {
                 progressBar.setVisibility(View.INVISIBLE);
 
@@ -95,7 +102,6 @@ public class SignInFragment extends Fragment {
         signUpLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressBar.setVisibility(View.VISIBLE);
 
                 NavHostFragment.findNavController(SignInFragment.this).popBackStack();
             }
@@ -106,6 +112,8 @@ public class SignInFragment extends Fragment {
             public void onClick(View v) {
 
                 if (checkFiled()) {
+                    progressBar.setVisibility(View.VISIBLE);
+
 
                     viewModel.singIn(emailFiled.getText().toString(),passwordFiled.getText().toString());
                 } else {

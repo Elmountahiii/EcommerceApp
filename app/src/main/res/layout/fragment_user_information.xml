@@ -11,6 +11,16 @@
         android:layout_height="match_parent">
 
 
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/inputImageProfile"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/profile_place_holder"
+            app:layout_constraintEnd_toEndOf="@+id/create_account"
+            app:layout_constraintStart_toStartOf="@+id/create_account"
+            app:layout_constraintTop_toBottomOf="@+id/signin_with_your_email2" />
+
         <TextView
             android:id="@+id/textView14"
             android:layout_width="wrap_content"
@@ -56,15 +66,14 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="32dp"
             android:layout_marginEnd="16dp"
+            android:background="@android:color/transparent"
             android:hint="Full Name"
             app:boxBackgroundColor="@android:color/transparent"
-            android:background="@android:color/transparent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:endIconDrawable="@drawable/person_outline"
             app:endIconMode="custom"
-            app:layout_constraintTop_toBottomOf="@+id/signin_with_your_email2"
-            >
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/inputImageProfile">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/FullNameInput"
@@ -246,6 +255,19 @@
                 android:inputType="none"
                 tools:text="Buyer" />
         </com.google.android.material.textfield.TextInputLayout>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imageView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/photo_camera"
+            app:layout_constraintBottom_toBottomOf="@+id/inputImageProfile"
+            app:layout_constraintEnd_toEndOf="@+id/inputImageProfile"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/inputImageProfile"
+            app:layout_constraintStart_toStartOf="@+id/inputImageProfile"
+            app:layout_constraintTop_toTopOf="@+id/inputImageProfile"
+            app:layout_constraintVertical_bias="1.0" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

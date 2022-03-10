@@ -1,5 +1,9 @@
 package com.my.ecommerce.view.fragments;
 
+import static android.app.Activity.RESULT_OK;
+
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -8,12 +12,15 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -25,6 +32,8 @@ import com.my.ecommerce.viewmodel.AppViewModel;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class UserInformationFragment extends Fragment {
 
     AppViewModel viewModel;
@@ -32,7 +41,11 @@ public class UserInformationFragment extends Fragment {
     TextInputEditText fullName, email, city, country, addressOne, addressTwo, zip;
     Button continueButton;
     AutoCompleteTextView autoCompleteUserType;
+
+CircleImageView profileImage,addProfile;
     ArrayList<String> usersType=new ArrayList<>();
+
+    Uri profileURI;
 
 
 
@@ -66,6 +79,8 @@ public class UserInformationFragment extends Fragment {
         zip = view.findViewById(R.id.zipInput);
         continueButton = view.findViewById(R.id.buttonContinue);
         autoCompleteUserType = view.findViewById(R.id.autoCompleteTextView);
+        profileImage =view.findViewById(R.id.inputImageProfile);
+        addProfile =view.findViewById(R.id.imageView3);
 
         ArrayAdapter adapter = new ArrayAdapter(getContext(), R.layout.drop_down_item, usersType);
 
@@ -92,11 +107,11 @@ public class UserInformationFragment extends Fragment {
                   int index =  usersType.indexOf(autoCompleteUserType.getText().toString());
                     UserInfo user;
                     if (index==0){
-                        user = new UserInfo(fullName.getText().toString(), email.getText().toString(), city.getText().toString(), country.getText().toString(), addressOne.getText().toString(), addressTwo.getText().toString(), zip.getText().toString(), UserType.Buyer);
+                        user = new UserInfo(fullName.getText().toString(), email.getText().toString(), city.getText().toString(), country.getText().toString(), addressOne.getText().toString(), addressTwo.getText().toString(), zip.getText().toString(), UserType.Buyer,"");
 
 
                     }else {
-                        user = new UserInfo(fullName.getText().toString(), email.getText().toString(), city.getText().toString(), country.getText().toString(), addressOne.getText().toString(), addressTwo.getText().toString(), zip.getText().toString(), UserType.Seller);
+                        user = new UserInfo(fullName.getText().toString(), email.getText().toString(), city.getText().toString(), country.getText().toString(), addressOne.getText().toString(), addressTwo.getText().toString(), zip.getText().toString(), UserType.Seller,"");
 
                     }
                     viewModel.saveUserInformation(user);
@@ -108,7 +123,28 @@ public class UserInformationFragment extends Fragment {
 
         viewModel.saveUserDataSuccess.observe(getViewLifecycleOwner(),aBoolean -> {
             if (aBoolean){
-                NavHostFragment.findNavController(this).navigate(R.id.action_userInformationFragment_to_accountFragment);
+                if (viewModel.userInformation.getValue().userType==UserType.Buyer){
+                    NavHostFragment.findNavController(this).navigate(R.id.action_userInformationFragment_to_buyerFragment);
+
+                }else {
+                    NavHostFragment.findNavController(this).navigate(R.id.action_userInformationFragment_to_sellerFragment);
+
+                }
+            }
+        });
+
+        profileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            openPhotoPicker();
+            }
+        });
+
+        addProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openPhotoPicker();
+
             }
         });
     }
@@ -124,5 +160,35 @@ public class UserInformationFragment extends Fragment {
     void initViewModel() {
         viewModel = new ViewModelProvider(requireActivity()).get(AppViewModel.class);
 
+    }
+
+
+    private void openPhotoPicker(){
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), 10);
+
+
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+
+        if ( resultCode ==RESULT_OK && requestCode== 10){
+
+            Log.d("risala", "onActivityResult: true");
+
+            profileURI=data.getData();
+            profileImage.setImageURI(profileURI);
+            viewModel.uploadUserProfileImage(profileURI);
+
+        }else {
+            Log.d("risala", "onActivityResult: no");
+
+        }
     }
 }

@@ -37,11 +37,11 @@ public class ProfileFragment extends Fragment {
 
         }else if (viewModel.getUsertype()== UserType.Buyer){
 
-            NavHostFragment.findNavController(this).navigate(R.id.action_destination_account_to_accountFragment);
+            NavHostFragment.findNavController(this).navigate(R.id.action_destination_account_to_buyerFragment);
 
 
         }else if (viewModel.getUsertype()== UserType.Seller){
-            NavHostFragment.findNavController(this).navigate(R.id.action_destination_account_to_accountFragment);
+            NavHostFragment.findNavController(this).navigate(R.id.action_destination_account_to_sellerFragment);
 
 
         }

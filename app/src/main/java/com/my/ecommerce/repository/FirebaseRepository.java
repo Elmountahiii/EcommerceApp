@@ -1,11 +1,13 @@
 package com.my.ecommerce.repository;
 
+import android.net.Uri;
 import android.util.Log;
 
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -21,6 +23,10 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.my.ecommerce.models.Cart;
 import com.my.ecommerce.models.Category;
 import com.my.ecommerce.models.Product;
@@ -34,6 +40,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 
 public class FirebaseRepository {
@@ -54,6 +61,10 @@ public class FirebaseRepository {
 
     // categories data location
     private final CollectionReference categoriesCollectionsPath = database.collection("categories");
+
+   private FirebaseStorage storage = FirebaseStorage.getInstance();
+
+
 
     // Products data location
     private final CollectionReference productsCollectionsPath = database.collection("products");
@@ -79,6 +90,8 @@ public class FirebaseRepository {
 
     public SingleLiveEvent<String> singUpError=new SingleLiveEvent<>();
     public SingleLiveEvent<String> singInError=new SingleLiveEvent<>();
+
+    private String userProfileLink;
 
 
 
@@ -373,7 +386,13 @@ public class FirebaseRepository {
                         if (info!=null){
                             userIs= info.userType;
 
+
                             userInformation.setValue(info);
+
+                            singInSuccess.setValue(true);
+                            saveUserDataSuccess.setValue(true);
+
+
 
                         }
                         getSavedCardIds();
@@ -423,7 +442,6 @@ public class FirebaseRepository {
                     @Override
                     public void onSuccess(AuthResult authResult) {
 
-                        singInSuccess.setValue(true);
                         checkUserType();
 
 
@@ -453,12 +471,14 @@ public class FirebaseRepository {
 
 
     public void SaveUserInfo(UserInfo userInfo){
+
+        userInfo.profileImage=userProfileLink;
         userInformationCollectionsPath.document(auth.getCurrentUser().getUid()).set(userInfo)
              .addOnSuccessListener(new OnSuccessListener<Void>() {
                  @Override
                  public void onSuccess(Void unused) {
-                     saveUserDataSuccess.setValue(true);
                      userIs=  userInfo.userType;
+
                      checkUserType();
                      Log.d("lilhada", "onSuccess: done ashbi");
                  }
@@ -468,6 +488,42 @@ public class FirebaseRepository {
             public void onFailure(@NonNull Exception e) {
                 Log.d("lilhada", "Failure: no ashbi");
 
+            }
+        });
+
+    }
+
+
+
+    public void saveUserProfileImage(Uri profileImage){
+        StorageReference ref
+                = storage.getReference().child(
+                "images/"
+                        + UUID.randomUUID().toString());
+
+
+     UploadTask uploadTask = ref.putFile(profileImage);
+
+        Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                if (!task.isSuccessful()) {
+                    throw task.getException();
+                }
+
+                return ref.getDownloadUrl();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()) {
+                    Uri downloadUri = task.getResult();
+                    userProfileLink=downloadUri.toString();
+                    Log.d("Imagaaa", "onComplete: this is the Uri "+downloadUri.toString());
+                } else {
+                    // Handle failures
+                    // ...
+                }
             }
         });
 
