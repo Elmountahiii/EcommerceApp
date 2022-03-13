@@ -8,7 +8,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
@@ -28,36 +27,19 @@ import com.my.ecommerce.models.Product;
 import com.my.ecommerce.viewmodel.AppViewModel;
 
 
-public class ProductDetailsFragment extends Fragment {
+public class WishProductDetailsFragment extends Fragment {
+
     private ImageView productImage;
     private TextView productTitle, productCategory, productPrice, productInformation, productFeatures,categoryTextView,reviewTextView,informationTextView,featuresTextView;
     private RatingBar ratingBar;
-    private Button addToCartButton,addToWishList;
+    private Button addToCartButton;
     private AppViewModel viewModel;
     private ProgressBar progressBar;
     private MaterialToolbar materialToolbar;
 
-
-    public ProductDetailsFragment() {
+    public WishProductDetailsFragment() {
         // Required empty public constructor
     }
-
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_product_details, container, false);
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        initViews(view);
-
-
-    }
-
 
     @Override
     public void onStart() {
@@ -65,8 +47,6 @@ public class ProductDetailsFragment extends Fragment {
         initViewModel();
 
     }
-
-    @Override
     public void onResume() {
         super.onResume();
 
@@ -82,17 +62,10 @@ public class ProductDetailsFragment extends Fragment {
             }
         });
 
-        addToWishList.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewModel.savedToWishList(viewModel.product.getValue());
-            }
-        });
-
         materialToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NavHostFragment.findNavController(ProductDetailsFragment.this).popBackStack();
+                NavHostFragment.findNavController(WishProductDetailsFragment.this).popBackStack();
             }
         });
 
@@ -112,26 +85,27 @@ public class ProductDetailsFragment extends Fragment {
 
     }
 
-    private void initViews(View view) {
-        materialToolbar=view.findViewById(R.id.topAppBar);
-        productImage = view.findViewById(R.id.productDetailsImage);
-        productTitle = view.findViewById(R.id.productDetailsTitle);
-        productCategory = view.findViewById(R.id.productDetailsCategory);
-        productPrice = view.findViewById(R.id.productDetailsPrice);
-        productInformation = view.findViewById(R.id.productDetailsInformation);
-        productFeatures = view.findViewById(R.id.productDetailsFeatures);
-        addToCartButton = view.findViewById(R.id.productDetailsAddToCart);
-        ratingBar=view.findViewById(R.id.ratingBar);
-        categoryTextView=view.findViewById(R.id.textView2);
-        reviewTextView=view.findViewById(R.id.textView5);
-        informationTextView=view.findViewById(R.id.textView6);
-        featuresTextView=view.findViewById(R.id.textView8);
-        progressBar=view.findViewById(R.id.progressBar);
-        addToWishList=view.findViewById(R.id.ButtonAddToWishList);
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initViews(view);
 
 
     }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_wish_product_details, container, false);
+    }
+
 
     void initViewModel() {
         viewModel = new ViewModelProvider(requireActivity()).get(AppViewModel.class);
@@ -166,4 +140,26 @@ public class ProductDetailsFragment extends Fragment {
         productFeatures.setText(product.features);
 
     }
+
+
+    private void initViews(View view) {
+        materialToolbar=view.findViewById(R.id.topAppBar2);
+        productImage = view.findViewById(R.id.productDetailsImage2);
+        productTitle = view.findViewById(R.id.productDetailsTitle2);
+        productCategory = view.findViewById(R.id.productDetailsCategory2);
+        productPrice = view.findViewById(R.id.productDetailsPrice2);
+        productInformation = view.findViewById(R.id.productDetailsInformation2);
+        productFeatures = view.findViewById(R.id.productDetailsFeatures2);
+        addToCartButton = view.findViewById(R.id.productDetailsAddToCart2);
+        ratingBar=view.findViewById(R.id.ratingBar2);
+        categoryTextView=view.findViewById(R.id.textView22);
+        reviewTextView=view.findViewById(R.id.textView52);
+        informationTextView=view.findViewById(R.id.textView62);
+        featuresTextView=view.findViewById(R.id.textView82);
+        progressBar=view.findViewById(R.id.progressBar2);
+
+
+
+    }
+
 }

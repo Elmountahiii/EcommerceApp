@@ -18,11 +18,14 @@ import java.util.List;
 
 public class AppViewModel extends ViewModel {
 
-    FirebaseRepository repository= new FirebaseRepository();
+    FirebaseRepository repository = new FirebaseRepository();
     public MutableLiveData<List<Category>> listOfCategories;
-    public  MutableLiveData<List<Product>> listOfProducts;
-    public MutableLiveData<ArrayList<Product>>listOfCartProduct;
+    public MutableLiveData<List<Product>> listOfProducts;
+    public MutableLiveData<ArrayList<Product>> listOfCartProduct;
     public MutableLiveData<Product> product;
+
+    public MutableLiveData<ArrayList<Product>> pastPurchaseList;
+    public MutableLiveData<ArrayList<Product>> wishListItems;
 
 
     public SingleLiveEvent<Boolean> singUpSuccess;
@@ -39,45 +42,44 @@ public class AppViewModel extends ViewModel {
     public SingleLiveEvent<String> singInError;
 
 
-
-
     public AppViewModel() {
         repository.checkUserAuthentication();
         listOfCategories = repository.listOfCategories;
-        listOfProducts= repository.listOfProducts;
+        listOfProducts = repository.listOfProducts;
         repository.getCategoriesFromDataBase();
         repository.getProductsFromDataBase();
-        product=repository.selectedProduct;
-        listOfCartProduct= repository.listOfCartProduct;
-        totalCartPrice= repository.totalCartPrice;
-        addingProductToCartState=repository.addingProductToCartState;
-        singInSuccess= repository.singInSuccess;
-        singUpSuccess= repository.singUpSuccess;
-        saveUserDataSuccess=repository.saveUserDataSuccess;
-        userInformation=repository.userInformation;
-        singInError=repository.singInError;
-        singUpError=repository.singUpError;
-
+        product = repository.selectedProduct;
+        listOfCartProduct = repository.listOfCartProduct;
+        totalCartPrice = repository.totalCartPrice;
+        addingProductToCartState = repository.addingProductToCartState;
+        singInSuccess = repository.singInSuccess;
+        singUpSuccess = repository.singUpSuccess;
+        saveUserDataSuccess = repository.saveUserDataSuccess;
+        userInformation = repository.userInformation;
+        singInError = repository.singInError;
+        singUpError = repository.singUpError;
+        pastPurchaseList= repository.pastPurchaseList;
+        wishListItems=repository.wishListItems;
 
 
     }
 
-    public void getCategories(){
+    public void getCategories() {
 
         repository.getCategoriesFromDataBase();
     }
 
-    public void  getProducts(){
+    public void getProducts() {
 
         repository.getProductsFromDataBase();
     }
 
-    public void getProductById(int id){
+    public void getProductById(int id) {
         repository.getProductById(id);
 
     }
 
-    public void removeProductFromCart(int position){
+    public void removeProductFromCart(int position) {
 
         repository.removeProductFromCart(position);
 
@@ -98,47 +100,78 @@ public class AppViewModel extends ViewModel {
         repository.minusFromPrice(priceToBeMinus);
     }
 
-    public void savedProductToCart(int productId){
+    public void savedProductToCart(int productId) {
         repository.checkIfProductAlreadySaved(productId);
     }
 
-    public void countCartTotalPrice(List<Product> products){
+    public void countCartTotalPrice(List<Product> products) {
         repository.countTotalPrice(products);
     }
 
 
-    public void sendConfirmationEmail(String emailAddress){
+    public void sendConfirmationEmail(String emailAddress) {
         repository.sendOrderConfirmation(emailAddress);
     }
 
 
-    public void removeCardItems(){
+    public void removeCardItems() {
         repository.removeALlCardProducts();
     }
 
-    public UserType getUsertype(){
+    public UserType getUsertype() {
         return repository.userIs;
     }
 
 
-    public void singUp(String email,String password){
+    public void singUp(String email, String password) {
         repository.singUp(email, password);
 
     }
-    public void singIn(String email,String password){
+
+    public void singIn(String email, String password) {
         repository.singIn(email, password);
 
     }
 
-    public void saveUserInformation(UserInfo user){
-      repository.SaveUserInfo(user);
+    public void saveUserInformation(UserInfo user) {
+        repository.SaveUserInfo(user);
     }
 
 
-    public void uploadUserProfileImage(Uri profileImage){
+    public void uploadUserProfileImage(Uri profileImage) {
         repository.saveUserProfileImage(profileImage);
     }
 
 
+    public void logout() {
+        repository.logout();
+    }
+
+    public void changePassword(String oldPassword, String newPassword) {
+
+        repository.changePassword(oldPassword, newPassword);
+
+    }
+
+    public void savedToPastPurchase(ArrayList<Product> productList) {
+        repository.savedToPastPurchase(productList);
+    }
+
+    public void getPastPurchase(){
+
+        repository.getPastPurchase();
+    }
+
+    public void savedToWishList(Product wishProduct) {
+
+       repository.savedToWishList(wishProduct);
+
+    }
+
+
+    public  void getWishList(){
+
+        repository.getSavedWishList();
+    }
 
 }

@@ -29,9 +29,11 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.my.ecommerce.models.Cart;
 import com.my.ecommerce.models.Category;
+import com.my.ecommerce.models.PastPurchase;
 import com.my.ecommerce.models.Product;
 import com.my.ecommerce.models.UserInfo;
 import com.my.ecommerce.models.UserType;
+import com.my.ecommerce.models.WishList;
 import com.my.ecommerce.utils.SingleLiveEvent;
 
 
@@ -53,7 +55,7 @@ public class FirebaseRepository {
     // Firebase Authentication Instance
     private final FirebaseAuth auth = FirebaseAuth.getInstance();
 
-    public UserType userIs= UserType.Anonymous;
+    public UserType userIs = UserType.Anonymous;
 
 
     // Firebase DataBase Instance
@@ -62,8 +64,7 @@ public class FirebaseRepository {
     // categories data location
     private final CollectionReference categoriesCollectionsPath = database.collection("categories");
 
-   private FirebaseStorage storage = FirebaseStorage.getInstance();
-
+    private FirebaseStorage storage = FirebaseStorage.getInstance();
 
 
     // Products data location
@@ -72,31 +73,39 @@ public class FirebaseRepository {
     // cart data location
     private final CollectionReference cartCollectionsPath = database.collection("cart");
 
+
+    //userInformation  data location
     private final CollectionReference userInformationCollectionsPath = database.collection("userInfo");
 
 
+    //Past Purchase data location
+    private final CollectionReference pastPurchaseCollectionsPath = database.collection("PastPurchase");
 
-    public MutableLiveData<UserInfo> userInformation= new MutableLiveData<>();
+    //Wish Products data location
+    private final CollectionReference wishProductsCollectionsPath = database.collection("WishProducts");
+
+
+    public MutableLiveData<UserInfo> userInformation = new MutableLiveData<>();
 
     public MutableLiveData<Product> selectedProduct = new MutableLiveData<Product>();
 
     public MutableLiveData<Float> totalCartPrice = new MutableLiveData<>(0.0f);
 
+    public MutableLiveData<ArrayList<Product>> pastPurchaseList = new MutableLiveData<>();
+
+    public MutableLiveData<ArrayList<Product>> wishListItems = new MutableLiveData<>();
+
+
     private Cart listOfCartIds = new Cart(new ArrayList<>());
 
-    public SingleLiveEvent<Boolean> singUpSuccess= new SingleLiveEvent<>();
-    public SingleLiveEvent<Boolean> singInSuccess= new SingleLiveEvent<>();
-    public SingleLiveEvent<Boolean> saveUserDataSuccess= new SingleLiveEvent<>();
+    public SingleLiveEvent<Boolean> singUpSuccess = new SingleLiveEvent<>();
+    public SingleLiveEvent<Boolean> singInSuccess = new SingleLiveEvent<>();
+    public SingleLiveEvent<Boolean> saveUserDataSuccess = new SingleLiveEvent<>();
 
-    public SingleLiveEvent<String> singUpError=new SingleLiveEvent<>();
-    public SingleLiveEvent<String> singInError=new SingleLiveEvent<>();
+    public SingleLiveEvent<String> singUpError = new SingleLiveEvent<>();
+    public SingleLiveEvent<String> singInError = new SingleLiveEvent<>();
 
     private String userProfileLink;
-
-
-
-
-
 
 
     // The Category Data
@@ -109,7 +118,7 @@ public class FirebaseRepository {
     public MutableLiveData<ArrayList<Product>> listOfCartProduct = new MutableLiveData<>();
 
 
-    public SingleLiveEvent<String> addingProductToCartState=new SingleLiveEvent<String>();
+    public SingleLiveEvent<String> addingProductToCartState = new SingleLiveEvent<String>();
 
 
     // categories
@@ -133,7 +142,6 @@ public class FirebaseRepository {
                 });
 
     }
-
 
 
     // products
@@ -179,8 +187,6 @@ public class FirebaseRepository {
     }
 
 
-
-
     // Logic methods
 
     public void addToPrice(float priceToBeAdd) {
@@ -221,13 +227,12 @@ public class FirebaseRepository {
         }
 
 
-
     }
 
 
     public void getSavedCardIds() {
 
-        if (auth.getCurrentUser().getUid()!=null){
+        if (auth.getCurrentUser().getUid() != null) {
 
             cartCollectionsPath.document(auth.getCurrentUser().getUid())
                     .get()
@@ -259,7 +264,7 @@ public class FirebaseRepository {
 
         ArrayList<Product> productList = new ArrayList<>();
 
-        if (listOfCartIds.productId.size()==0){
+        if (listOfCartIds.productId.size() == 0) {
             listOfCartProduct.setValue(productList);
         }
 
@@ -272,9 +277,9 @@ public class FirebaseRepository {
                         @Override
                         public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
-                            if (queryDocumentSnapshots.isEmpty()){
+                            if (queryDocumentSnapshots.isEmpty()) {
 
-                            }else {
+                            } else {
                             }
 
                             try {
@@ -298,31 +303,29 @@ public class FirebaseRepository {
         }
 
 
-
     }
 
-    public  void removeALlCardProducts(){
-    Map<String, Object> cartData = new HashMap<>();
-    cartData.put("productId", new ArrayList<Integer>());
-    cartCollectionsPath.document(auth.getCurrentUser().getUid())
-            .set(cartData)
-            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void unused) {
-                    getSavedCardIds();
+    public void removeALlCardProducts() {
+        Map<String, Object> cartData = new HashMap<>();
+        cartData.put("productId", new ArrayList<Integer>());
+        cartCollectionsPath.document(auth.getCurrentUser().getUid())
+                .set(cartData)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        getSavedCardIds();
 
 
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
 
-                }
-            })
-            .addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
+                    }
+                });
 
-                }
-            });
-
-}
+    }
 
     private void saveProductsIdsToDatabase(List<Integer> productIds) {
 
@@ -336,7 +339,6 @@ public class FirebaseRepository {
                     public void onSuccess(Void unused) {
 
                         getCardProducts();
-
 
 
                     }
@@ -356,11 +358,197 @@ public class FirebaseRepository {
         listOfCartIds.productId.remove(Integer.valueOf(product.id));
 
 
-
         saveProductsIdsToDatabase(listOfCartIds.productId);
 
     }
 
+
+    public void savedToPastPurchase(ArrayList<Product> productList) {
+
+        pastPurchaseCollectionsPath.document(auth.getCurrentUser().getUid())
+                .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+
+                if (documentSnapshot.exists()) {
+
+                    PastPurchase purchase = documentSnapshot.toObject(PastPurchase.class);
+                    if (purchase != null) {
+                        purchase.productList.addAll(productList);
+
+                        pastPurchaseCollectionsPath
+                                .document(auth.getCurrentUser().getUid())
+                                .set(purchase)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+
+                            }
+                        });
+
+                    }
+
+
+                } else {
+                    pastPurchaseCollectionsPath
+                            .document(auth.getCurrentUser().getUid())
+                            .set(new PastPurchase(productList))
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+
+                                }
+                            });
+                }
+
+            }
+        });
+
+
+    }
+
+
+    public void getPastPurchase() {
+
+        pastPurchaseCollectionsPath.document(auth.getCurrentUser().getUid())
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        PastPurchase purchase = documentSnapshot.toObject(PastPurchase.class);
+                        if (purchase != null) {
+                            pastPurchaseList.setValue(purchase.productList);
+                        } else {
+
+                        }
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+    }
+
+
+    public void savedToWishList(Product wishProduct) {
+
+        wishProductsCollectionsPath.document(auth.getCurrentUser().getUid())
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+
+                        if (documentSnapshot.exists())
+                        {
+                            WishList wishList = documentSnapshot.toObject(WishList.class);
+
+                            if (wishList != null) {
+                                wishList.productList.add(wishProduct);
+
+
+
+                                wishProductsCollectionsPath.document(auth.getCurrentUser().getUid())
+                                        .set(wishList)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void unused) {
+
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+
+                                            }
+                                        });
+
+                            }
+
+                        }
+
+                        else {
+
+                            WishList wishList =new WishList();
+                            ArrayList<Product> products =new ArrayList<>();
+                            products.add(wishProduct);
+                            wishList.productList=products;
+                            wishProductsCollectionsPath.document(auth.getCurrentUser().getUid())
+                                    .set(wishList)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void unused) {
+
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+
+                                        }
+                                    });
+                        }
+
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+
+    }
+
+
+    public void getSavedWishList(){
+
+
+        wishProductsCollectionsPath.document(auth.getCurrentUser().getUid())
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        Log.d("doxa", "onSuccess: ");
+
+                        if (documentSnapshot.exists()){
+
+                            Log.d("doxa", "doc l9inah: ");
+
+                            WishList wishList = documentSnapshot.toObject(WishList.class);
+
+                            if (wishList!=null){
+                                Log.d("doxa", "object mchi null: ");
+
+                                wishListItems.setValue(wishList.productList);
+
+                            }else {
+                                Log.d("doxa", "object null: ");
+
+                            }
+                        }
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+    }
 
 
     //Authentication
@@ -368,7 +556,7 @@ public class FirebaseRepository {
     public void checkUserAuthentication() {
         if (auth.getCurrentUser() == null) {
             signUserAnonymously();
-        }else {
+        } else {
             checkUserType();
         }
     }
@@ -381,10 +569,10 @@ public class FirebaseRepository {
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        Log.d("khobi", "onSuccess: "+documentSnapshot.getData());
+                        Log.d("khobi", "onSuccess: " + documentSnapshot.getData());
                         UserInfo info = documentSnapshot.toObject(UserInfo.class);
-                        if (info!=null){
-                            userIs= info.userType;
+                        if (info != null) {
+                            userIs = info.userType;
 
 
                             userInformation.setValue(info);
@@ -393,17 +581,16 @@ public class FirebaseRepository {
                             saveUserDataSuccess.setValue(true);
 
 
-
                         }
                         getSavedCardIds();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
 
-            }
-        });
+                    }
+                });
     }
 
     private void signUserAnonymously() {
@@ -417,15 +604,15 @@ public class FirebaseRepository {
         });
     }
 
-    public void singUp(String email,String password){
+    public void singUp(String email, String password) {
         AuthCredential credential = EmailAuthProvider.getCredential(email, password);
         auth.getCurrentUser().linkWithCredential(credential)
-               .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                   @Override
-                   public void onSuccess(AuthResult authResult) {
-                       singUpSuccess.setValue(true);
-                   }
-               }).addOnFailureListener(new OnFailureListener() {
+                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                    @Override
+                    public void onSuccess(AuthResult authResult) {
+                        singUpSuccess.setValue(true);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 singUpSuccess.setValue(false);
@@ -436,15 +623,13 @@ public class FirebaseRepository {
 
     }
 
-    public void singIn(String email,String password){
+    public void singIn(String email, String password) {
         auth.signInWithEmailAndPassword(email, password)
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
 
                         checkUserType();
-
-
 
 
                     }
@@ -460,49 +645,43 @@ public class FirebaseRepository {
     }
 
 
-    public void sendOrderConfirmation(String emailAddress){
-
-
-
-
+    public void sendOrderConfirmation(String emailAddress) {
 
 
     }
 
 
-    public void SaveUserInfo(UserInfo userInfo){
+    public void SaveUserInfo(UserInfo userInfo) {
 
-        userInfo.profileImage=userProfileLink;
+        userInfo.profileImage = userProfileLink;
         userInformationCollectionsPath.document(auth.getCurrentUser().getUid()).set(userInfo)
-             .addOnSuccessListener(new OnSuccessListener<Void>() {
-                 @Override
-                 public void onSuccess(Void unused) {
-                     userIs=  userInfo.userType;
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        userIs = userInfo.userType;
 
-                     checkUserType();
-                     Log.d("lilhada", "onSuccess: done ashbi");
-                 }
-             })
+                        checkUserType();
+                        Log.d("lilhada", "onSuccess: done ashbi");
+                    }
+                })
                 .addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d("lilhada", "Failure: no ashbi");
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("lilhada", "Failure: no ashbi");
 
-            }
-        });
+                    }
+                });
 
     }
 
-
-
-    public void saveUserProfileImage(Uri profileImage){
+    public void saveUserProfileImage(Uri profileImage) {
         StorageReference ref
                 = storage.getReference().child(
                 "images/"
                         + UUID.randomUUID().toString());
 
 
-     UploadTask uploadTask = ref.putFile(profileImage);
+        UploadTask uploadTask = ref.putFile(profileImage);
 
         Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
             @Override
@@ -518,14 +697,53 @@ public class FirebaseRepository {
             public void onComplete(@NonNull Task<Uri> task) {
                 if (task.isSuccessful()) {
                     Uri downloadUri = task.getResult();
-                    userProfileLink=downloadUri.toString();
-                    Log.d("Imagaaa", "onComplete: this is the Uri "+downloadUri.toString());
+                    userProfileLink = downloadUri.toString();
+                    Log.d("Imagaaa", "onComplete: this is the Uri " + downloadUri.toString());
                 } else {
                     // Handle failures
                     // ...
                 }
             }
         });
+
+    }
+
+
+    public void logout() {
+        auth.signOut();
+        userIs = UserType.Anonymous;
+    }
+
+    public void changePassword(String oldPassword, String newPassword) {
+        String email = auth.getCurrentUser().getEmail();
+
+
+        AuthCredential credential = EmailAuthProvider.getCredential(email, oldPassword);
+
+        auth.getCurrentUser().reauthenticate(credential)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("bimno", "onComplete: the first");
+                            auth.getCurrentUser().updatePassword(newPassword).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Log.d("bimno", "onComplete: the second");
+
+                                    } else {
+                                        Log.d("bimno", "secend la");
+
+                                    }
+                                }
+                            });
+                        } else {
+                            Log.d("bimno", "first  la");
+
+                        }
+                    }
+                });
 
     }
 

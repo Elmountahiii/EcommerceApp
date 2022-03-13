@@ -107,6 +107,7 @@ public class ProductsSummeryFragment extends Fragment {
 
 
          viewModel.removeCardItems();
+         viewModel.savedToPastPurchase(viewModel.listOfCartProduct.getValue());
 
     }
     // start using that viewModel

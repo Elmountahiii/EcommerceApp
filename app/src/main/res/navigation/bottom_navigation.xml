@@ -140,10 +140,52 @@
         android:id="@+id/buyerFragment"
         android:name="com.my.ecommerce.view.fragments.BuyerFragment"
         android:label="fragment_buyer"
-        tools:layout="@layout/fragment_buyer" />
+        tools:layout="@layout/fragment_buyer" >
+        <action
+            android:id="@+id/action_buyerFragment_to_wishListFragment"
+            app:destination="@id/wishListFragment" />
+        <action
+            android:id="@+id/action_buyerFragment_to_changePasswordFragment"
+            app:destination="@id/changePasswordFragment" />
+        <action
+            android:id="@+id/action_buyerFragment_to_pastPurchaseFragment"
+            app:destination="@id/pastPurchaseFragment" />
+        <action
+            android:id="@+id/action_buyerFragment_to_signInFragment"
+            app:destination="@id/signInFragment"
+            app:popUpTo="@id/destination_home"
+            app:popUpToInclusive="false"
+            />
+    </fragment>
     <fragment
         android:id="@+id/sellerFragment"
         android:name="com.my.ecommerce.view.fragments.SellerFragment"
         android:label="SellerFragment" />
+    <fragment
+        android:id="@+id/wishListFragment"
+        android:name="com.my.ecommerce.view.fragments.WishListFragment"
+        android:label="WishListFragment" >
+        <action
+            android:id="@+id/action_wishListFragment_to_wishProductDetailsFragment"
+            app:destination="@id/wishProductDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/changePasswordFragment"
+        android:name="com.my.ecommerce.view.fragments.ChangePasswordFragment"
+        android:label="fragment_change_password"
+        tools:layout="@layout/fragment_change_password" />
+    <fragment
+        android:id="@+id/pastPurchaseFragment"
+        android:name="com.my.ecommerce.view.fragments.PastPurchaseFragment"
+        android:label="fragment_wish_list"
+        tools:layout="@layout/fragment_wish_list" >
+        <action
+            android:id="@+id/action_pastPurchaseFragment_to_productDetailsFragment"
+            app:destination="@id/productDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/wishProductDetailsFragment"
+        android:name="com.my.ecommerce.view.fragments.WishProductDetailsFragment"
+        android:label="WishProductDetailsFragment" />
 
 </navigation>
