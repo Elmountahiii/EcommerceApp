@@ -80,6 +80,13 @@ public class SellerFragment extends Fragment {
                 .load(viewModel.userInformation.getValue().profileImage)
                 .into(profileImage);
 
+
+        currentProducts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavHostFragment.findNavController(SellerFragment.this).navigate(R.id.action_sellerFragment_to_currentSellsProductsFragment);
+            }
+        });
         userFullName.setText(viewModel.userInformation.getValue().fullName);
 
         uploadProduct.setOnClickListener(new View.OnClickListener() {

@@ -121,6 +121,8 @@ public class FirebaseRepository {
     // The Products Data
     public MutableLiveData<List<Product>> listOfProducts = new MutableLiveData<>();
 
+    public MutableLiveData<List<Product>> listOfUserProduct= new MutableLiveData<>();
+
     public MutableLiveData<ArrayList<Product>> listOfCartProduct = new MutableLiveData<>();
 
 
@@ -264,6 +266,26 @@ public class FirebaseRepository {
         });
 
 
+    }
+
+    public void getAllUserSellsProduct(){
+
+        productsCollectionsPath.orderBy("ownerId", Query.Direction.DESCENDING)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if (!queryDocumentSnapshots.isEmpty()){
+                            listOfUserProduct.setValue(queryDocumentSnapshots.toObjects(Product.class));
+                        }
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
     }
 
 

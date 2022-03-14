@@ -173,6 +173,9 @@
             app:popUpTo="@id/destination_home"
             app:popUpToInclusive="false"
             />
+        <action
+            android:id="@+id/action_sellerFragment_to_currentSellsProductsFragment"
+            app:destination="@id/currentSellsProductsFragment" />
     </fragment>
     <fragment
         android:id="@+id/wishListFragment"
@@ -205,5 +208,10 @@
         android:name="com.my.ecommerce.view.fragments.UploadProductFragment"
         android:label="fragment_upload_product"
         tools:layout="@layout/fragment_upload_product" />
+    <fragment
+        android:id="@+id/currentSellsProductsFragment"
+        android:name="com.my.ecommerce.view.fragments.CurrentSellsProductsFragment"
+        android:label="fragment_current_sells_products"
+        tools:layout="@layout/fragment_current_sells_products" />
 
 </navigation>
