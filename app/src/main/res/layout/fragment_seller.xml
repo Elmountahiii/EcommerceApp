@@ -34,7 +34,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="8dp"
             android:textColor="@color/black"
-            android:textSize="18sp"
+            android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/seller_profile_image"
             app:layout_constraintEnd_toStartOf="@+id/imageView4"
@@ -89,20 +89,20 @@
             android:layout_marginTop="16dp"
             android:text="1  -  Upload item for sell"
             android:textColor="@color/black"
-            android:textSize="18sp"
+            android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="@+id/imageView4"
             app:layout_constraintStart_toStartOf="@+id/textView20"
             app:layout_constraintTop_toBottomOf="@+id/textView20" />
 
         <TextView
-            android:id="@+id/view_past_sells"
+            android:id="@+id/view_current_sells"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="2  -  past sells"
+            android:text="2  -  current sells"
             android:textColor="@color/black"
-            android:textSize="18sp"
+            android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="@+id/add_item"
             app:layout_constraintStart_toStartOf="@+id/add_item"
@@ -110,17 +110,17 @@
 
 
         <TextView
-            android:id="@+id/view_current_sells"
+            android:id="@+id/view_past_sells"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="3  -  current sells"
+            android:text="3  -  past sells"
             android:textColor="@color/black"
-            android:textSize="18sp"
+            android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="@+id/add_item"
             app:layout_constraintStart_toStartOf="@+id/add_item"
-            app:layout_constraintTop_toBottomOf="@+id/view_past_sells" />
+            app:layout_constraintTop_toBottomOf="@+id/view_current_sells" />
 
         <TextView
             android:id="@+id/view_amount"
@@ -129,11 +129,11 @@
             android:layout_marginTop="16dp"
             android:text="4  -  amount "
             android:textColor="@color/black"
-            android:textSize="18sp"
+            android:textSize="24sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="@+id/view_current_sells"
-            app:layout_constraintStart_toStartOf="@+id/view_current_sells"
-            app:layout_constraintTop_toBottomOf="@+id/view_current_sells" />
+            app:layout_constraintEnd_toEndOf="@+id/view_past_sells"
+            app:layout_constraintStart_toStartOf="@+id/view_past_sells"
+            app:layout_constraintTop_toBottomOf="@+id/view_past_sells" />
 
         <TextView
             android:id="@+id/seller_change_password"
@@ -142,7 +142,7 @@
             android:layout_marginTop="16dp"
             android:text="5   - change password "
             android:textColor="@color/black"
-            android:textSize="18sp"
+            android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="@+id/view_amount"
             app:layout_constraintStart_toStartOf="@+id/view_amount"
@@ -155,11 +155,22 @@
             android:layout_marginTop="16dp"
             android:text="6  - logout "
             android:textColor="#FF0000"
-            android:textSize="20sp"
+            android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="@+id/seller_change_password"
             app:layout_constraintStart_toStartOf="@+id/seller_change_password"
             app:layout_constraintTop_toBottomOf="@+id/seller_change_password" />
+
+        <ProgressBar
+            android:id="@+id/progressBar6"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

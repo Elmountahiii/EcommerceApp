@@ -36,7 +36,9 @@ public class AppViewModel extends ViewModel {
     public MutableLiveData<Float> totalCartPrice;
     public SingleLiveEvent<String> addingProductToCartState;
     public MutableLiveData<UserInfo> userInformation;
-
+    public ArrayList<String> listOfCategoriesString;
+    public ArrayList<String> usersType = new ArrayList<>();
+    public SingleLiveEvent<Boolean> uploadingProductState;
 
     public SingleLiveEvent<String> singUpError;
     public SingleLiveEvent<String> singInError;
@@ -60,6 +62,10 @@ public class AppViewModel extends ViewModel {
         singUpError = repository.singUpError;
         pastPurchaseList= repository.pastPurchaseList;
         wishListItems=repository.wishListItems;
+        listOfCategoriesString=repository.listOfCategoriesString;
+        usersType.add("Buyer");
+        usersType.add("Seller");
+        uploadingProductState=repository.UploadingProductState;
 
 
     }
@@ -174,4 +180,10 @@ public class AppViewModel extends ViewModel {
         repository.getSavedWishList();
     }
 
+
+
+    public void uploadProduct(Uri productImage,String title,String information,String features ,String Category,String price){
+
+        repository.uploadProduct(productImage, title, information, features, Category, price);
+    }
 }

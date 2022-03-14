@@ -42,11 +42,10 @@ public class UserInformationFragment extends Fragment {
     Button continueButton;
     AutoCompleteTextView autoCompleteUserType;
 
-CircleImageView profileImage,addProfile;
-    ArrayList<String> usersType=new ArrayList<>();
+    CircleImageView profileImage, addProfile;
+    ArrayList<String> usersType = new ArrayList<>();
 
     Uri profileURI;
-
 
 
     public UserInformationFragment() {
@@ -63,8 +62,14 @@ CircleImageView profileImage,addProfile;
     public void onStart() {
         super.onStart();
         initViewModel();
-        usersType.add("Buyer");
-        usersType.add("Seller");
+        if (usersType.isEmpty()){
+            usersType=viewModel.usersType;
+        }
+
+        ArrayAdapter adapter = new ArrayAdapter(getContext(), R.layout.drop_down_item, usersType);
+
+        autoCompleteUserType.setAdapter(adapter);
+
     }
 
     @Override
@@ -79,12 +84,8 @@ CircleImageView profileImage,addProfile;
         zip = view.findViewById(R.id.zipInput);
         continueButton = view.findViewById(R.id.buttonContinue);
         autoCompleteUserType = view.findViewById(R.id.autoCompleteTextView);
-        profileImage =view.findViewById(R.id.inputImageProfile);
-        addProfile =view.findViewById(R.id.imageView3);
-
-        ArrayAdapter adapter = new ArrayAdapter(getContext(), R.layout.drop_down_item, usersType);
-
-        autoCompleteUserType.setAdapter(adapter);
+        profileImage = view.findViewById(R.id.inputImageProfile);
+        addProfile = view.findViewById(R.id.imageView3);
 
     }
 
@@ -102,16 +103,16 @@ CircleImageView profileImage,addProfile;
         continueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (checkUserInformation()){
+                if (checkUserInformation()) {
                     autoCompleteUserType.getText().toString();
-                  int index =  usersType.indexOf(autoCompleteUserType.getText().toString());
+                    int index = usersType.indexOf(autoCompleteUserType.getText().toString());
                     UserInfo user;
-                    if (index==0){
-                        user = new UserInfo(fullName.getText().toString(), email.getText().toString(), city.getText().toString(), country.getText().toString(), addressOne.getText().toString(), addressTwo.getText().toString(), zip.getText().toString(), UserType.Buyer,"");
+                    if (index == 0) {
+                        user = new UserInfo(fullName.getText().toString(), email.getText().toString(), city.getText().toString(), country.getText().toString(), addressOne.getText().toString(), addressTwo.getText().toString(), zip.getText().toString(), UserType.Buyer, "");
 
 
-                    }else {
-                        user = new UserInfo(fullName.getText().toString(), email.getText().toString(), city.getText().toString(), country.getText().toString(), addressOne.getText().toString(), addressTwo.getText().toString(), zip.getText().toString(), UserType.Seller,"");
+                    } else {
+                        user = new UserInfo(fullName.getText().toString(), email.getText().toString(), city.getText().toString(), country.getText().toString(), addressOne.getText().toString(), addressTwo.getText().toString(), zip.getText().toString(), UserType.Seller, "");
 
                     }
                     viewModel.saveUserInformation(user);
@@ -121,12 +122,12 @@ CircleImageView profileImage,addProfile;
             }
         });
 
-        viewModel.saveUserDataSuccess.observe(getViewLifecycleOwner(),aBoolean -> {
-            if (aBoolean){
-                if (viewModel.userInformation.getValue().userType==UserType.Buyer){
+        viewModel.saveUserDataSuccess.observe(getViewLifecycleOwner(), aBoolean -> {
+            if (aBoolean) {
+                if (viewModel.userInformation.getValue().userType == UserType.Buyer) {
                     NavHostFragment.findNavController(this).navigate(R.id.action_userInformationFragment_to_buyerFragment);
 
-                }else {
+                } else {
                     NavHostFragment.findNavController(this).navigate(R.id.action_userInformationFragment_to_sellerFragment);
 
                 }
@@ -136,7 +137,7 @@ CircleImageView profileImage,addProfile;
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            openPhotoPicker();
+                openPhotoPicker();
             }
         });
 
@@ -149,11 +150,10 @@ CircleImageView profileImage,addProfile;
         });
     }
 
-    public Boolean checkUserInformation(){
+    public Boolean checkUserInformation() {
         return !fullName.getText().toString().isEmpty() && !city.getText().toString().isEmpty() && !country.getText().toString().isEmpty() &&
                 !addressOne.getText().toString().isEmpty() && !zip.getText().toString().isEmpty() && !email.getText().toString().isEmpty();
     }
-
 
 
     // start using that viewModel
@@ -163,7 +163,7 @@ CircleImageView profileImage,addProfile;
     }
 
 
-    private void openPhotoPicker(){
+    private void openPhotoPicker() {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -178,15 +178,15 @@ CircleImageView profileImage,addProfile;
         super.onActivityResult(requestCode, resultCode, data);
 
 
-        if ( resultCode ==RESULT_OK && requestCode== 10){
+        if (resultCode == RESULT_OK && requestCode == 10) {
 
             Log.d("risala", "onActivityResult: true");
 
-            profileURI=data.getData();
+            profileURI = data.getData();
             profileImage.setImageURI(profileURI);
             viewModel.uploadUserProfileImage(profileURI);
 
-        }else {
+        } else {
             Log.d("risala", "onActivityResult: no");
 
         }

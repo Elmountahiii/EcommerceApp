@@ -12,6 +12,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -20,6 +21,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -38,7 +40,9 @@ import com.my.ecommerce.utils.SingleLiveEvent;
 
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -107,6 +111,8 @@ public class FirebaseRepository {
 
     private String userProfileLink;
 
+    public ArrayList<String> listOfCategoriesString = new ArrayList<>();
+
 
     // The Category Data
     public MutableLiveData<List<Category>> listOfCategories = new MutableLiveData<List<Category>>() {
@@ -120,6 +126,9 @@ public class FirebaseRepository {
 
     public SingleLiveEvent<String> addingProductToCartState = new SingleLiveEvent<String>();
 
+    public SingleLiveEvent<Boolean> UploadingProductState = new SingleLiveEvent<Boolean>();
+
+
 
     // categories
 
@@ -131,7 +140,15 @@ public class FirebaseRepository {
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
-                        listOfCategories.setValue(queryDocumentSnapshots.toObjects(Category.class));
+
+                        List<Category> categories = queryDocumentSnapshots.toObjects(Category.class);
+
+                        for (int i = 0; i < categories.size(); i++) {
+                            listOfCategoriesString.add(categories.get(i).CategoryName);
+
+                        }
+                        listOfCategories.setValue(categories);
+
 
                     }
 
@@ -148,7 +165,7 @@ public class FirebaseRepository {
 
     public void getProductsFromDataBase() {
         productsCollectionsPath
-                .orderBy("id", Query.Direction.DESCENDING)
+                .orderBy("time", Query.Direction.DESCENDING)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
@@ -182,6 +199,69 @@ public class FirebaseRepository {
 
                     }
                 });
+
+
+    }
+
+
+    public void uploadProduct(Uri productImage, String title, String information, String features, String Category, String price) {
+
+
+        StorageReference ref
+                = storage.getReference().child(
+                "images/"
+                        + UUID.randomUUID().toString());
+
+
+        UploadTask uploadTask = ref.putFile(productImage);
+
+        Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                if (!task.isSuccessful()) {
+                    throw task.getException();
+                }
+
+                return ref.getDownloadUrl();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()) {
+                    Uri downloadUri = task.getResult();
+
+
+                    int productId=(int) System.currentTimeMillis();
+                    String productImage = downloadUri.toString();
+                    String productTile = title;
+                    String productCategory = Category;
+                    String productFeatures = features;
+                    String ProductInformation = information;
+                    Float productPrice =Float.valueOf(price);
+                    int productSellsCount=0;
+                    String productOwner= auth.getCurrentUser().getUid();
+
+                    Product product = new Product(productId,productPrice,productTile,productFeatures,productImage,ProductInformation,productCategory,productOwner,productSellsCount);
+
+                    productsCollectionsPath.add(product)
+                            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                @Override
+                                public void onSuccess(DocumentReference documentReference) {
+                                    UploadingProductState.setValue(true);
+                                    getProductsFromDataBase();
+
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            UploadingProductState.setValue(false);
+                            Log.d("kikch", "onFailure: " + e.getMessage());
+                        }
+                    });
+
+                }
+            }
+        });
 
 
     }
@@ -451,13 +531,11 @@ public class FirebaseRepository {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
 
-                        if (documentSnapshot.exists())
-                        {
+                        if (documentSnapshot.exists()) {
                             WishList wishList = documentSnapshot.toObject(WishList.class);
 
                             if (wishList != null) {
                                 wishList.productList.add(wishProduct);
-
 
 
                                 wishProductsCollectionsPath.document(auth.getCurrentUser().getUid())
@@ -477,14 +555,12 @@ public class FirebaseRepository {
 
                             }
 
-                        }
+                        } else {
 
-                        else {
-
-                            WishList wishList =new WishList();
-                            ArrayList<Product> products =new ArrayList<>();
+                            WishList wishList = new WishList();
+                            ArrayList<Product> products = new ArrayList<>();
                             products.add(wishProduct);
-                            wishList.productList=products;
+                            wishList.productList = products;
                             wishProductsCollectionsPath.document(auth.getCurrentUser().getUid())
                                     .set(wishList)
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -513,7 +589,7 @@ public class FirebaseRepository {
     }
 
 
-    public void getSavedWishList(){
+    public void getSavedWishList() {
 
 
         wishProductsCollectionsPath.document(auth.getCurrentUser().getUid())
@@ -523,18 +599,18 @@ public class FirebaseRepository {
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         Log.d("doxa", "onSuccess: ");
 
-                        if (documentSnapshot.exists()){
+                        if (documentSnapshot.exists()) {
 
                             Log.d("doxa", "doc l9inah: ");
 
                             WishList wishList = documentSnapshot.toObject(WishList.class);
 
-                            if (wishList!=null){
+                            if (wishList != null) {
                                 Log.d("doxa", "object mchi null: ");
 
                                 wishListItems.setValue(wishList.productList);
 
-                            }else {
+                            } else {
                                 Log.d("doxa", "object null: ");
 
                             }
@@ -543,11 +619,11 @@ public class FirebaseRepository {
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
 
-            }
-        });
+                    }
+                });
     }
 
 
