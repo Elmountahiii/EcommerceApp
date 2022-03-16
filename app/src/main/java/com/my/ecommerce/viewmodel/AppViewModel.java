@@ -43,6 +43,7 @@ public class AppViewModel extends ViewModel {
 
     public SingleLiveEvent<String> singUpError;
     public SingleLiveEvent<String> singInError;
+    public MutableLiveData<List<Product>> soldProductList;
 
 
     public AppViewModel() {
@@ -68,6 +69,7 @@ public class AppViewModel extends ViewModel {
         usersType.add("Seller");
         uploadingProductState=repository.UploadingProductState;
         listOfUserProduct= repository.listOfUserProduct;
+        soldProductList=repository.soldProductList;
 
 
     }
@@ -200,5 +202,9 @@ public class AppViewModel extends ViewModel {
     public void uploadProduct(Uri productImage,String title,String information,String features ,String Category,String price){
 
         repository.uploadProduct(productImage, title, information, features, Category, price);
+    }
+
+    public void getAllSellsProduct(){
+        repository.getAllSellsProduct();
     }
 }

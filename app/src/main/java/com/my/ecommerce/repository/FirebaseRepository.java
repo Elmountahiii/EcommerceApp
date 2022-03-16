@@ -12,21 +12,17 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.my.ecommerce.models.Cart;
@@ -39,10 +35,7 @@ import com.my.ecommerce.models.WishList;
 import com.my.ecommerce.utils.SingleLiveEvent;
 
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,6 +90,9 @@ public class FirebaseRepository {
 
     public MutableLiveData<List<Product>> pastPurchaseList = new MutableLiveData<>();
 
+    public MutableLiveData<List<Product>> soldProductList = new MutableLiveData<>();
+
+
     public MutableLiveData<ArrayList<Product>> wishListItems = new MutableLiveData<>();
 
 
@@ -121,7 +117,7 @@ public class FirebaseRepository {
     // The Products Data
     public MutableLiveData<List<Product>> listOfProducts = new MutableLiveData<>();
 
-    public MutableLiveData<List<Product>> listOfUserProduct= new MutableLiveData<>();
+    public MutableLiveData<List<Product>> listOfUserProduct = new MutableLiveData<>();
 
     public MutableLiveData<ArrayList<Product>> listOfCartProduct = new MutableLiveData<>();
 
@@ -129,7 +125,6 @@ public class FirebaseRepository {
     public SingleLiveEvent<String> addingProductToCartState = new SingleLiveEvent<String>();
 
     public SingleLiveEvent<Boolean> UploadingProductState = new SingleLiveEvent<Boolean>();
-
 
 
     // categories
@@ -233,17 +228,17 @@ public class FirebaseRepository {
                     Uri downloadUri = task.getResult();
 
 
-                    int productId=(int) System.currentTimeMillis();
+                    int productId = (int) System.currentTimeMillis();
                     String productImage = downloadUri.toString();
                     String productTile = title;
                     String productCategory = Category;
                     String productFeatures = features;
                     String ProductInformation = information;
-                    Float productPrice =Float.valueOf(price);
-                    int productSellsCount=0;
-                    String productOwner= auth.getCurrentUser().getUid();
+                    Float productPrice = Float.valueOf(price);
+                    int productSellsCount = 0;
+                    String productOwner = auth.getCurrentUser().getUid();
 
-                    Product product = new Product(productId,productPrice,productTile,productFeatures,productImage,ProductInformation,productCategory,productOwner,productSellsCount);
+                    Product product = new Product(productId, productPrice, productTile, productFeatures, productImage, ProductInformation, productCategory, productOwner, productSellsCount);
 
                     productsCollectionsPath.add(product)
                             .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
@@ -268,14 +263,14 @@ public class FirebaseRepository {
 
     }
 
-    public void getAllUserSellsProduct(){
+    public void getAllUserSellsProduct() {
 
         productsCollectionsPath.orderBy("ownerId", Query.Direction.DESCENDING)
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        if (!queryDocumentSnapshots.isEmpty()){
+                        if (!queryDocumentSnapshots.isEmpty()) {
                             listOfUserProduct.setValue(queryDocumentSnapshots.toObjects(Product.class));
                         }
 
@@ -288,19 +283,35 @@ public class FirebaseRepository {
         });
     }
 
+    public void getAllSellsProduct() {
+        productsCollectionsPath.whereGreaterThan("selleCount", 0).get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            soldProductList.setValue(queryDocumentSnapshots.toObjects(Product.class));
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
 
-    public void filterProduct(String query){
+            }
+        });
+    }
+
+    public void filterProduct(String query) {
 
 
-        if (query.isEmpty()){
+        if (query.isEmpty()) {
             getProductsFromDataBase();
-        }else {
-            ArrayList<Product> filteredList= new ArrayList<>();
+        } else {
+            ArrayList<Product> filteredList = new ArrayList<>();
 
             for (int i = 0; i < listOfProducts.getValue().size(); i++) {
 
-                Product theProduct=listOfProducts.getValue().get(i);
-                if (theProduct.title.contains(query)){
+                Product theProduct = listOfProducts.getValue().get(i);
+                if (theProduct.title.contains(query)) {
                     filteredList.add(theProduct);
                 }
 
@@ -311,22 +322,18 @@ public class FirebaseRepository {
         }
 
 
-
-
-
-
     }
 
-    public void filterCategory(String query){
-        if (query.isEmpty()){
+    public void filterCategory(String query) {
+        if (query.isEmpty()) {
             getCategoriesFromDataBase();
-        }else {
-            ArrayList<Category> theCategoryList=new ArrayList<>();
+        } else {
+            ArrayList<Category> theCategoryList = new ArrayList<>();
             for (int i = 0; i < listOfCategories.getValue().size(); i++) {
 
-                Category category= listOfCategories.getValue().get(i);
+                Category category = listOfCategories.getValue().get(i);
 
-                if (category.CategoryName.contains(query)){
+                if (category.CategoryName.contains(query)) {
                     theCategoryList.add(listOfCategories.getValue().get(i));
                 }
 
@@ -512,10 +519,52 @@ public class FirebaseRepository {
 
     }
 
+    public void getProductPath(int id) {
+
+        productsCollectionsPath.whereEqualTo("id", id).get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+
+
+                    List<DocumentSnapshot> y = task.getResult().getDocuments();
+                    upDate( y.get(0).getId());
+
+                }
+            }
+        });
+
+    }
+
+    public void upDate(String CollectionPath){
+        productsCollectionsPath.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                if (!queryDocumentSnapshots.isEmpty()) {
+                    List<Product> products = queryDocumentSnapshots.toObjects(Product.class);
+                    products.get(0).selleCount = products.get(0).selleCount + 1;
+                      productsCollectionsPath.document(CollectionPath).set( products.get(0)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                          @Override
+                          public void onSuccess(Void unused) {
+
+                          }
+                      });
+                }
+            }
+        });
+    }
 
     public void savedToPastPurchase(ArrayList<Product> productList) {
 
         addBalanceToUser(productList);
+
+        for (int i = 0; i < productList.size(); i++) {
+
+            getProductPath(productList.get(i).id);
+
+        }
+
 
         pastPurchaseCollectionsPath.document(auth.getCurrentUser().getUid())
                 .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -526,27 +575,27 @@ public class FirebaseRepository {
 
                     PastPurchase purchase = documentSnapshot.toObject(PastPurchase.class);
                     if (purchase != null) {
-                       try {
-                          purchase.productList.addAll(productList);
+                        try {
+                            purchase.productList.addAll(productList);
 
-                           pastPurchaseCollectionsPath
-                                   .document(auth.getCurrentUser().getUid())
-                                   .set(purchase)
-                                   .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                       @Override
-                                       public void onSuccess(Void unused) {
+                            pastPurchaseCollectionsPath
+                                    .document(auth.getCurrentUser().getUid())
+                                    .set(purchase)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void unused) {
 
-                                       }
-                                   }).addOnFailureListener(new OnFailureListener() {
-                               @Override
-                               public void onFailure(@NonNull Exception e) {
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
 
-                               }
-                           });
+                                }
+                            });
 
-                       }catch (Exception e){
-                           Log.e("thezbi", "onSuccess: ", e);
-                       }
+                        } catch (Exception e) {
+                            Log.e("thezbi", "onSuccess: ", e);
+                        }
 
                     }
 
@@ -576,38 +625,38 @@ public class FirebaseRepository {
     }
 
 
-    private void addBalanceToUser(ArrayList<Product> productList){
+    private void addBalanceToUser(ArrayList<Product> productList) {
 
 
         for (int i = 0; i < productList.size(); i++) {
-            String ownerId=productList.get(i).ownerId;
-            doThJob(ownerId,productList.get(i).price);
-            }
+            String ownerId = productList.get(i).ownerId;
+            doThJob(ownerId, productList.get(i).price);
+        }
 
     }
 
 
-    private void  doThJob(String owner,float price){
+    private void doThJob(String owner, float price) {
         userInformationCollectionsPath.document(owner)
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if (documentSnapshot.exists()){
-                            UserInfo user=documentSnapshot.toObject(UserInfo.class);
-                            user .balance=  user.balance+price;
+                        if (documentSnapshot.exists()) {
+                            UserInfo user = documentSnapshot.toObject(UserInfo.class);
+                            user.balance = user.balance + price;
                             userInformationCollectionsPath.document(owner).set(user)
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void unused) {
 
                                         }
-                                    }) .addOnFailureListener(new OnFailureListener() {
+                                    }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
 
                                 }
-                            })  ;
+                            });
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {

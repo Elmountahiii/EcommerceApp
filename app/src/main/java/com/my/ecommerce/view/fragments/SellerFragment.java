@@ -81,6 +81,14 @@ public class SellerFragment extends Fragment {
                 .into(profileImage);
 
 
+        pastProducts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavHostFragment.findNavController(SellerFragment.this).navigate(R.id.action_sellerFragment_to_soldProductFragment);
+
+            }
+        });
+
         currentProducts.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,7 +110,7 @@ public class SellerFragment extends Fragment {
             public void onClick(View v) {
                 progressBar6.setVisibility(View.VISIBLE);
                 viewModel.logout();
-                NavHostFragment.findNavController(SellerFragment.this).navigate(R.id.action_buyerFragment_to_signInFragment);
+                NavHostFragment.findNavController(SellerFragment.this).navigate(R.id.action_sellerFragment_to_signInFragment);
             }
         });
 

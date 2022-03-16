@@ -179,6 +179,9 @@
         <action
             android:id="@+id/action_sellerFragment_to_amountFragment"
             app:destination="@id/amountFragment" />
+        <action
+            android:id="@+id/action_sellerFragment_to_soldProductFragment"
+            app:destination="@id/soldProductFragment" />
     </fragment>
     <fragment
         android:id="@+id/wishListFragment"
@@ -221,5 +224,10 @@
         android:name="com.my.ecommerce.view.fragments.AmountFragment"
         android:label="fragment_amount"
         tools:layout="@layout/fragment_amount" />
+    <fragment
+        android:id="@+id/soldProductFragment"
+        android:name="com.my.ecommerce.view.fragments.SoldProductFragment"
+        android:label="fragment_sold_product"
+        tools:layout="@layout/fragment_sold_product" />
 
 </navigation>

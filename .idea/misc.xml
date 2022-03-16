@@ -22,6 +22,7 @@
         <entry key="..\:/Users/Yusuf/AndroidStudioProjects/Ecommerce/app/src/main/res/layout/fragment_shopping_cart.xml" value="0.18" />
         <entry key="..\:/Users/Yusuf/AndroidStudioProjects/Ecommerce/app/src/main/res/layout/fragment_sign_in.xml" value="0.22" />
         <entry key="..\:/Users/Yusuf/AndroidStudioProjects/Ecommerce/app/src/main/res/layout/fragment_sign_up.xml" value="0.21" />
+        <entry key="..\:/Users/Yusuf/AndroidStudioProjects/Ecommerce/app/src/main/res/layout/fragment_sold_product.xml" value="0.19324324324324324" />
         <entry key="..\:/Users/Yusuf/AndroidStudioProjects/Ecommerce/app/src/main/res/layout/fragment_upload_product.xml" value="0.25" />
         <entry key="..\:/Users/Yusuf/AndroidStudioProjects/Ecommerce/app/src/main/res/layout/fragment_user_information.xml" value="0.33" />
         <entry key="..\:/Users/Yusuf/AndroidStudioProjects/Ecommerce/app/src/main/res/layout/fragment_wish_list.xml" value="0.19324324324324324" />
@@ -30,6 +31,7 @@
         <entry key="..\:/Users/Yusuf/AndroidStudioProjects/Ecommerce/app/src/main/res/layout/singel_category_item.xml" value="0.5" />
         <entry key="..\:/Users/Yusuf/AndroidStudioProjects/Ecommerce/app/src/main/res/layout/single_cart_product_item.xml" value="0.33" />
         <entry key="..\:/Users/Yusuf/AndroidStudioProjects/Ecommerce/app/src/main/res/layout/single_product_item_layout.xml" value="0.25" />
+        <entry key="..\:/Users/Yusuf/AndroidStudioProjects/Ecommerce/app/src/main/res/layout/sold_product_item_layout.xml" value="0.22" />
         <entry key="..\:/Users/Yusuf/AndroidStudioProjects/Ecommerce/app/src/main/res/layout/today_product_item_layout.xml" value="0.2" />
         <entry key="..\:/Users/Yusuf/AndroidStudioProjects/amazonClone/app/src/main/res/drawable/custom_shearch_icon.xml" value="0.1925925925925926" />
         <entry key="..\:/Users/Yusuf/AndroidStudioProjects/amazonClone/app/src/main/res/drawable/ic_search.xml" value="0.19722222222222222" />
