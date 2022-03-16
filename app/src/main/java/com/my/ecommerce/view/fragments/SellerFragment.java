@@ -106,6 +106,14 @@ public class SellerFragment extends Fragment {
             }
         });
 
+
+        amount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavHostFragment.findNavController(SellerFragment.this).navigate(R.id.action_sellerFragment_to_amountFragment);
+            }
+        });
+
         changePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -108,11 +108,11 @@ public class UserInformationFragment extends Fragment {
                     int index = usersType.indexOf(autoCompleteUserType.getText().toString());
                     UserInfo user;
                     if (index == 0) {
-                        user = new UserInfo(fullName.getText().toString(), email.getText().toString(), city.getText().toString(), country.getText().toString(), addressOne.getText().toString(), addressTwo.getText().toString(), zip.getText().toString(), UserType.Buyer, "");
+                        user = new UserInfo(fullName.getText().toString(), email.getText().toString(), city.getText().toString(), country.getText().toString(), addressOne.getText().toString(), addressTwo.getText().toString(), zip.getText().toString(), UserType.Buyer, "",0);
 
 
                     } else {
-                        user = new UserInfo(fullName.getText().toString(), email.getText().toString(), city.getText().toString(), country.getText().toString(), addressOne.getText().toString(), addressTwo.getText().toString(), zip.getText().toString(), UserType.Seller, "");
+                        user = new UserInfo(fullName.getText().toString(), email.getText().toString(), city.getText().toString(), country.getText().toString(), addressOne.getText().toString(), addressTwo.getText().toString(), zip.getText().toString(), UserType.Seller, "",0);
 
                     }
                     viewModel.saveUserInformation(user);

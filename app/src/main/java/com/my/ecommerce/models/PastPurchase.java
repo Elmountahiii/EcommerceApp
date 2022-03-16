@@ -1,10 +1,11 @@
 package com.my.ecommerce.models;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class PastPurchase {
 
-   public ArrayList<Product> productList;
+   public List<Product> productList;
 
 
     public  PastPurchase(){

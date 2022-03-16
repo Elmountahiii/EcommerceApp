@@ -4,12 +4,13 @@ public class UserInfo {
 
     public String fullName, email, city, country, addressOne, addressTwo, zip,profileImage;
     public UserType userType;
+    public float balance;
 
     public UserInfo(){
 
     }
 
-    public UserInfo(String fullName, String email, String city, String country, String addressOne, String addressTwo, String zip, UserType userType ,String profileImage) {
+    public UserInfo(String fullName, String email, String city, String country, String addressOne, String addressTwo, String zip, UserType userType ,String profileImage,float balance) {
         this.fullName = fullName;
         this.email = email;
         this.city = city;
@@ -19,5 +20,6 @@ public class UserInfo {
         this.profileImage=profileImage;
         this.zip = zip;
         this.userType = userType;
+        this.balance=balance;
     }
 }

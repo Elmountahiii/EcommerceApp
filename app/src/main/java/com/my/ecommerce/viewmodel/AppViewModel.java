@@ -24,7 +24,7 @@ public class AppViewModel extends ViewModel {
     public MutableLiveData<ArrayList<Product>> listOfCartProduct;
     public MutableLiveData<Product> product;
 
-    public MutableLiveData<ArrayList<Product>> pastPurchaseList;
+    public MutableLiveData<List<Product>> pastPurchaseList;
     public MutableLiveData<ArrayList<Product>> wishListItems;
 
 
@@ -185,6 +185,15 @@ public class AppViewModel extends ViewModel {
 
    public void getAllUserSellsProduct(){
         repository.getAllUserSellsProduct();
+   }
+
+
+   public void filterProduct(String query){
+        repository.filterProduct(query);
+   }
+
+   public void filterCategory(String query){
+        repository.filterCategory(query);
    }
 
 

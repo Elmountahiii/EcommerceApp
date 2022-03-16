@@ -95,7 +95,7 @@ public class FirebaseRepository {
 
     public MutableLiveData<Float> totalCartPrice = new MutableLiveData<>(0.0f);
 
-    public MutableLiveData<ArrayList<Product>> pastPurchaseList = new MutableLiveData<>();
+    public MutableLiveData<List<Product>> pastPurchaseList = new MutableLiveData<>();
 
     public MutableLiveData<ArrayList<Product>> wishListItems = new MutableLiveData<>();
 
@@ -289,6 +289,54 @@ public class FirebaseRepository {
     }
 
 
+    public void filterProduct(String query){
+
+
+        if (query.isEmpty()){
+            getProductsFromDataBase();
+        }else {
+            ArrayList<Product> filteredList= new ArrayList<>();
+
+            for (int i = 0; i < listOfProducts.getValue().size(); i++) {
+
+                Product theProduct=listOfProducts.getValue().get(i);
+                if (theProduct.title.contains(query)){
+                    filteredList.add(theProduct);
+                }
+
+            }
+
+            listOfProducts.setValue(filteredList);
+
+        }
+
+
+
+
+
+
+    }
+
+    public void filterCategory(String query){
+        if (query.isEmpty()){
+            getCategoriesFromDataBase();
+        }else {
+            ArrayList<Category> theCategoryList=new ArrayList<>();
+            for (int i = 0; i < listOfCategories.getValue().size(); i++) {
+
+                Category category= listOfCategories.getValue().get(i);
+
+                if (category.CategoryName.contains(query)){
+                    theCategoryList.add(listOfCategories.getValue().get(i));
+                }
+
+            }
+
+            listOfCategories.setValue(theCategoryList);
+        }
+    }
+
+
     // Logic methods
 
     public void addToPrice(float priceToBeAdd) {
@@ -467,6 +515,8 @@ public class FirebaseRepository {
 
     public void savedToPastPurchase(ArrayList<Product> productList) {
 
+        addBalanceToUser(productList);
+
         pastPurchaseCollectionsPath.document(auth.getCurrentUser().getUid())
                 .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -476,22 +526,27 @@ public class FirebaseRepository {
 
                     PastPurchase purchase = documentSnapshot.toObject(PastPurchase.class);
                     if (purchase != null) {
-                        purchase.productList.addAll(productList);
+                       try {
+                          purchase.productList.addAll(productList);
 
-                        pastPurchaseCollectionsPath
-                                .document(auth.getCurrentUser().getUid())
-                                .set(purchase)
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void unused) {
+                           pastPurchaseCollectionsPath
+                                   .document(auth.getCurrentUser().getUid())
+                                   .set(purchase)
+                                   .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                       @Override
+                                       public void onSuccess(Void unused) {
 
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
+                                       }
+                                   }).addOnFailureListener(new OnFailureListener() {
+                               @Override
+                               public void onFailure(@NonNull Exception e) {
 
-                            }
-                        });
+                               }
+                           });
+
+                       }catch (Exception e){
+                           Log.e("thezbi", "onSuccess: ", e);
+                       }
 
                     }
 
@@ -517,6 +572,50 @@ public class FirebaseRepository {
             }
         });
 
+
+    }
+
+
+    private void addBalanceToUser(ArrayList<Product> productList){
+
+
+        for (int i = 0; i < productList.size(); i++) {
+            String ownerId=productList.get(i).ownerId;
+            doThJob(ownerId,productList.get(i).price);
+            }
+
+    }
+
+
+    private void  doThJob(String owner,float price){
+        userInformationCollectionsPath.document(owner)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()){
+                            UserInfo user=documentSnapshot.toObject(UserInfo.class);
+                            user .balance=  user.balance+price;
+                            userInformationCollectionsPath.document(owner).set(user)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void unused) {
+
+                                        }
+                                    }) .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+
+                                }
+                            })  ;
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
 
     }
 
