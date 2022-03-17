@@ -265,7 +265,8 @@ public class FirebaseRepository {
 
     public void getAllUserSellsProduct() {
 
-        productsCollectionsPath.orderBy("ownerId", Query.Direction.DESCENDING)
+        productsCollectionsPath
+                .whereEqualTo("ownerId", auth.getCurrentUser().getUid())
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
@@ -284,7 +285,8 @@ public class FirebaseRepository {
     }
 
     public void getAllSellsProduct() {
-        productsCollectionsPath.whereGreaterThan("selleCount", 0).get()
+        productsCollectionsPath.whereEqualTo("ownerId", auth.getCurrentUser().getUid())
+                .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -523,33 +525,33 @@ public class FirebaseRepository {
 
         productsCollectionsPath.whereEqualTo("id", id).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
 
 
-                    List<DocumentSnapshot> y = task.getResult().getDocuments();
-                    upDate( y.get(0).getId());
+                            List<DocumentSnapshot> y = task.getResult().getDocuments();
+                            upDate(y.get(0).getId());
 
-                }
-            }
-        });
+                        }
+                    }
+                });
 
     }
 
-    public void upDate(String CollectionPath){
+    public void upDate(String CollectionPath) {
         productsCollectionsPath.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 if (!queryDocumentSnapshots.isEmpty()) {
                     List<Product> products = queryDocumentSnapshots.toObjects(Product.class);
                     products.get(0).selleCount = products.get(0).selleCount + 1;
-                      productsCollectionsPath.document(CollectionPath).set( products.get(0)).addOnSuccessListener(new OnSuccessListener<Void>() {
-                          @Override
-                          public void onSuccess(Void unused) {
+                    productsCollectionsPath.document(CollectionPath).set(products.get(0)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
 
-                          }
-                      });
+                        }
+                    });
                 }
             }
         });
