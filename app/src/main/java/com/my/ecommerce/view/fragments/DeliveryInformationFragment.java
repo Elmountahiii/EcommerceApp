@@ -66,6 +66,19 @@ public class DeliveryInformationFragment extends Fragment {
         super.onResume();
 
 
+        viewModel.userInformation.observe(getViewLifecycleOwner(),userInfo -> {
+            if (userInfo!=null){
+                fullName.setText(userInfo.fullName);
+                email.setText(userInfo.email);
+                country.setText(userInfo.country);
+                city.setText(userInfo.city);
+                addressOne.setText(userInfo.addressOne);
+                addressTwo.setText(userInfo.addressTwo);
+                zip.setText(userInfo.zip);
+            }
+        });
+
+
         backButton.setOnClickListener(new View.OnClickListener()    {
             @Override
             public void onClick(View v) {
